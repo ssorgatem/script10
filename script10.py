@@ -22,8 +22,6 @@ for NumArgs in sys.argv[1:]:  #Bucle per a dur a terme les operacions sobre tots
 
   #Ara toca començar-ne el procesament
   RawSeq = RawSeq.upper() #Passem a majúscules
-
-  print  RawSeq  #Mostrem el contingut de la variable.
   
   SeqLen = len(RawSeq) #Calculem la longitud de la cadena
 
@@ -31,6 +29,7 @@ for NumArgs in sys.argv[1:]:  #Bucle per a dur a terme les operacions sobre tots
     print "Seqüència incompleta! No és múltiple de 3"
   else: 
     print "és múltiple de 3"
+    print  RawSeq  #Mostrem el contingut de la variable.
     #Continuem...
   
 

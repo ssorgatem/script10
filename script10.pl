@@ -24,15 +24,13 @@ foreach $NumArgs (0 .. $#ARGV) { #Bucle per a dur a terme les operacions sobre t
 
   #Ara toca començar-ne el procesament
   $RawSeq = uc $RawSeq; #Passem a majúscules
-
-  print  " $RawSeq \n"; #Mostrem el contingut de la variable.
-  
   $SeqLen = length $RawSeq;#Calculem la longitud de la cadena
 
   if ( $SeqLen%3 != 0){ #Comprovem si és divisible entre 3, i si no ho és abortem
     print "Seqüència incompleta! No és múltiple de 3\n";
   } else {
     print "és múltiple de 3\n";
+    print  " $RawSeq \n"; #Mostrem el contingut de la variable.
     #Continuem...
   }
 }
