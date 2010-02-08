@@ -2,10 +2,10 @@
 #Descripció de l'script 10
 # Adrià Cereto Massagué <adrian.cereto@estudiants.urv.cat>, David Carrasco Flores 
 
-$Usage = "Ús:
-perl script10.pl ARXIU1 [ARXIU2] [ARXIU3] ...
-";
+#Comencem a definir coses
+$Usage = "Ús:\nperl script10.pl ARXIU1 [ARXIU2] [ARXIU3] ...\n"; #Missatge d'ajuda per a l'ús de l'script
 
+#Aquí comença l'execució
 if ($ARGV[0] eq "-h" || $ARGV[0] eq "--help" || $ARGV[0] eq ""){
   die $Usage;
 }
