@@ -2,9 +2,6 @@
 #Descripció de l'script 10
 # Adrià Cereto Massagué <adrian.cereto@estudiants.urv.cat>, David Carrasco Flores 
 
-use Bio::Seq; #Importem mòduls útils
-use Bio::SeqIO;
-
 $Usage = "Ús:
 perl script10.pl ARXIU1 [ARXIU2] [ARXIU3] ...
 ";
@@ -26,23 +23,16 @@ foreach $NumArgs (0 .. $#ARGV) { #Bucle per a dur a terme les operacions sobre t
   close INPUT; #Tanquem el fitxer, ja no el necessitem obert
 
   #Ara toca començar-ne el procesament
-  $RawSeq = uc $RawSeq #Passem a majúscules
+  $RawSeq = uc $RawSeq; #Passem a majúscules
 
-  print "$RawSeq \n"; #Mostrem el contingut de la variable.
+  print  " $RawSeq \n"; #Mostrem el contingut de la variable.
   
-  $Seq = Bio::PrimarySeq->new( -seq => $RawSeq,  #Creem un objecte Bio::PrimarySeq a partir del contingut de la variable $RawSeq
-			      -id  => 'id_qualsevol', #Qualsevol valor ens servirà per accession_number i id, ja que no els farem servir.
-			      -accession_number => '',
-  );
- # 
+  $SeqLen = length $RawSeq;#Calculem la longitud de la cadena
 
-  if ($Seq->length()%3 != 0){ #Calculem la longitud de la cadena i comprovem si és divisible entre 3, i si no ho és abortem
+  if ( $SeqLen%3 != 0){ #Comprovem si és divisible entre 3, i si no ho és abortem
     print "Seqüencia incompleta! No és múltiple de 3\n";
   } else {
     print "és múltiple de 3\n";
-
-    print $Seq->alphabet;
-
-    print "\n";
+    #Continuem...
   }
 }
