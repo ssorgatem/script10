@@ -1,7 +1,9 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 # Adrià Cereto Massagué <adrian.cereto@estudiants.urv.cat>
-
+"""
+Script per a traduir una seqüència de DNA a proteines, comprobant que sigui DNA i que tingui els codons necesaris
+"""
 import sys #Importem mòduls bàsics
 #Comencem a definir coses
 Usage = "Ús:\npython script10.py ARXIU1 [ARXIU2] [ARXIU3] ...\n" #Missatge d'ajuda per a l'ús de l'script
