@@ -6,7 +6,7 @@
 $Usage = "Ús:\nperl script10.pl ARXIU1 [ARXIU2] [ARXIU3] ...\n"; #Missatge d'ajuda per a l'ús de l'script
 
 #Aquí comença l'execució
-if ($ARGV[0] eq "-h" || $ARGV[0] eq "--help" || $ARGV[0] eq ""){
+if ($ARGV[0] eq "-h" || $ARGV[0] eq "--help" || $ARGV[0] eq ""){ #Interceptem falta d'arguments o demanda d'ajuda
   die $Usage;
 }
 
@@ -30,7 +30,7 @@ foreach $NumArgs (0 .. $#ARGV) { #Bucle per a dur a terme les operacions sobre t
   $SeqLen = length $RawSeq;#Calculem la longitud de la cadena
 
   if ( $SeqLen%3 != 0){ #Comprovem si és divisible entre 3, i si no ho és abortem
-    print "Seqüencia incompleta! No és múltiple de 3\n";
+    print "Seqüència incompleta! No és múltiple de 3\n";
   } else {
     print "és múltiple de 3\n";
     #Continuem...
