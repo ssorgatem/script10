@@ -79,10 +79,10 @@ sub DNAParser{ # SubrutinAa que procesa i valida la seqüència d'entrada
    $RawSeq = ""; #Inicialitza la variable on guardarem la seqüència, per a cada volta del bucle
    $InputFile = $_[0]; #Aquest es el fitxer d'on treurem la seqüència
   print "Llegint $InputFile"."... ";
-  open INPUT, "<$InputFile";  # Obre el fitxer d'entrada
+  open INPUT, "<$InputFile" || return "False";  # Obre el fitxer d'entrada
     while ($line = <INPUT>){ #Bucle per passar les línies sense \n a la variable $RawSeq
       chomp $line; #Treiem el canvi de linia de cada linia
-      $RawSeq = $RawSeq.$line; 
+      $RawSeq = $RawSeq.$line; #Afegim la linia a la cadena
     }
   close INPUT; #Tanquem el fitxer, ja no el necessitem obert
   
@@ -112,7 +112,6 @@ sub DNA2aa { #Subrutina per a traduir la cadena de DNA prèviament validada i pr
   my $Proteina = ""; #Inicialitzem la variable contenidora de la proteina
   for ($pos=$patro; $pos < $DnaLen; $pos +=3) {#Bucle per a traduir els nucleotids de 3 en 3
     $codon = substr($_[0], $pos, 3);#agafa els 3 nucleòtids més a l'esquerra que no hem llegit encara
-    #print $codon.";";
     $aa = $CodiGenetic{$codon}; #Tradueix el codó
     if ($aa eq '_'){ #Si es un stop, atura
       last;#Finalitza aquí el bucle
