@@ -97,7 +97,7 @@ sub DNAParser{ # SubrutinAa que procesa i valida la seqüència d'entrada
   } elsif($RawSeq =~ /[^ACGT]/g){ #Ara busquem bases que no siguin A,C,G o T
     print "La seqüència no está formada només per A,T,C o G, abortant\n"; #Si les trobem, no continuem
     return "False";
-  }elsif((substr($RawSeq, $pos, 3)) ne "ATG"){ #Comprovem que comenci per un codó d'inici
+  }elsif((substr($RawSeq, $patro, 3)) ne "ATG"){ #Comprovem que comenci per un codó d'inici
     print "La seqüència no comença per un codó d'inici!\n";#I si no ho fa, abortem
     return "False";
   }else{ #Si no, seguim
