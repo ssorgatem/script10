@@ -82,7 +82,7 @@ sub DNAParser{ # SubrutinAa que procesa i valida la seqüència d'entrada
   open INPUT, "<$InputFile" || return "False";  # Obre el fitxer d'entrada
     while ($line = <INPUT>){ #Bucle per passar les línies sense \n a la variable $RawSeq
       chomp $line; #Treiem el canvi de linia de cada linia
-      $RawSeq = $RawSeq.$line; #Afegim la linia a la cadena
+      $RawSeq .= $line; #Afegim la linia a la cadena
     }
   close INPUT; #Tanquem el fitxer, ja no el necessitem obert
   
@@ -94,16 +94,14 @@ sub DNAParser{ # SubrutinAa que procesa i valida la seqüència d'entrada
   if ( $SeqLen%3 != 0){ #Comprovem si és divisible entre 3, i si no ho és abortem
     print "seqüència incompleta! No és múltiple de 3\nAbortant...\n";
     return "False"
-  } else {
-    print "és múltiple de 3\n";
-    if ($RawSeq =~ /[^ACGT]/g){ #Ara busquem bases que no siguin A,C,G o T
-      print "La seqüència no está formada només per A,T,C o G, abortant\n"; #Si les trobem, no continuem
-      return "False";
-    }else{ #Si no, seguim
-      #Continuem...
-      print "Cadena de DNA: "."$RawSeq \n"; #Mostrem el contingut de la variable.
-      return $RawSeq;
-    }
+  } elsif($RawSeq =~ /[^ACGT]/g){ #Ara busquem bases que no siguin A,C,G o T
+    print "La seqüència no está formada només per A,T,C o G, abortant\n"; #Si les trobem, no continuem
+    return "False";
+  }else{ #Si no, seguim
+    print "\n".$RawSeq[5];
+    #Continuem...
+    print "\nCadena de DNA: "."$RawSeq \n"; #Mostrem el contingut de la variable.
+    return $RawSeq;
   }
 }
 
@@ -115,11 +113,10 @@ sub DNA2aa { #Subrutina per a traduir la cadena de DNA prèviament validada i pr
     $aa = $CodiGenetic{$codon}; #Tradueix el codó
     if ($aa eq '_'){ #Si es un stop, atura
       last;#Finalitza aquí el bucle
-    }else { #Si no, guardem l'aminoàcid a la variable $Proteina
-      if ($aa eq ''){#Això no hauria de passar, però si trobem un codó que no es contempla al codi genètic...
-	print "Codó desconegut:$codon !\n";
-	$aa = "?"; #Queixem-nos i posem un interrogant a la proteina
-      }
+    }elsif ($aa eq ''){#Això no hauria de passar, però si trobem un codó que no es contempla al codi genètic...(segurament per culpa d'un bug) 
+      print "Codó desconegut:$codon !\n";
+      $aa = "?"; #Queixem-nos i posem un interrogant a la proteina
+    }else{#Si no, guardem l'aminoàcid a la variable $Proteina
       $Proteina = $Proteina.$aa;
     }
   }
