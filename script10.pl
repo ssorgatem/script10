@@ -5,8 +5,8 @@
 #TODO: DNAParser: definir tots els filtre per a determinar que sigui només un gen
 
 #Comencem a definir coses
-$Usage = "Ús:\nperl script10.pl ARXIU1 [ARXIU2] [ARXIU3] ...\n"; #Missatge d'ajuda per a l'ús de l'script
-$patro = 0; #Posició des d'on començar a llegir la cadena de DNA. Pot ser 0, 1 o 2
+$Usage = "Ús:\nperl script10.pl ARXIU1 [ARXIU2] [ARXIU3] ...\nO bé:\nperl script10.pl --translate SEQÜÈNCIA1 [SEQÜÈNCIA2] [SEQÜÈNCIA3] ...\n\nSi s'executa sense arguments, demanarà l'entrada manual de la seqüència d'un gen\n"; #Missatge d'ajuda per a l'ús de l'script
+$patro = 0; #Posició des d'on començar a llegir la cadena de DNA. Pot ser 0, 1 o 2. No gaire útil, per ara.
 
 %CodiGenetic = ( #Fem un Hash enmagatzemant el codi genetic
   'TCA'=>'S', #Serine
@@ -75,20 +75,22 @@ $patro = 0; #Posició des d'on començar a llegir la cadena de DNA. Pot ser 0, 1
   'GGT'=>'G', #Glycine
 ); 
 
-sub DNAParser{ # SubrutinAa que procesa i valida la seqüència d'entrada
-   $RawSeq = ""; #Inicialitza la variable on guardarem la seqüència, per a cada volta del bucle
-   $InputFile = $_[0]; #Aquest es el fitxer d'on treurem la seqüència
-  print "Llegint $InputFile"."... ";
-  open INPUT, "<$InputFile" || return "False";  # Obre el fitxer d'entrada
-    while ($line = <INPUT>){ #Bucle per passar les línies sense \n a la variable $RawSeq
-      chomp $line; #Treiem el canvi de linia de cada linia
-      $RawSeq .= $line; #Afegim la linia a la cadena
-    }
+sub File2Line{
+  $Line = ""; #Inicialitza la variable on guardarem la seqüència, per a cada volta del bucle
+  $File = $_[0]; #Aquest es el fitxer d'on treurem la seqüència
+  print "Llegint $File"."... ";
+  open INPUT, "<$File" || return "False";  # Obre el fitxer d'entrada
+  while ($line = <INPUT>){ #Bucle per passar les línies sense \n a la variable $RawSeq
+    chomp $line; #Treiem el canvi de linia de cada linia
+    $Line .= $line; #Afegim la linia a la cadena
+  }
   close INPUT; #Tanquem el fitxer, ja no el necessitem obert
-  
+  return $Line;
+}
 
+sub DNAParser{ # Subrutina que procesa i valida la seqüència d'entrada
   #Ara toca començar-ne el procesament
-  $RawSeq = uc $RawSeq; #Passem a majúscules
+  $RawSeq = uc $_[0]; #Passem a majúscules
   $SeqLen = length $RawSeq;#Calculem la longitud de la cadena
 
   if ( $SeqLen%3 != 0){ #Comprovem si és divisible entre 3, i si no ho és abortem
@@ -99,6 +101,9 @@ sub DNAParser{ # SubrutinAa que procesa i valida la seqüència d'entrada
     return "False";
   }elsif((substr($RawSeq, $patro, 3)) ne "ATG"){ #Comprovem que comenci per un codó d'inici
     print "La seqüència no comença per un codó d'inici!\n";#I si no ho fa, abortem
+    return "False";
+  }elsif($CodiGenetic{(substr($RawSeq, $SeqLen-3, 3))} ne "_"){ #Comprovem que acabi amb un codó de stop
+    print "La seqüència no acaba amb un codó de stop!\n";#I si no ho fa, abortem
     return "False";
   }else{ #Si no, seguim
     #Continuem...
@@ -127,15 +132,29 @@ sub DNA2aa { #Subrutina per a traduir la cadena de DNA prèviament validada i pr
 }
 
 #Aquí comença l'execució
+until($ARGV[0] ne ""){
+  print "Introduiu la seqüència de DNA d'un gen:\n";
+  $escrita = <> ;
+  chomp $escrita;
+  @ARGV = ("--translate", $escrita);
+}
 if ($ARGV[0] eq "-h" || $ARGV[0] eq "--help" || $ARGV[0] eq ""){ #Interceptem falta d'arguments o demanda d'ajuda
   die $Usage;
-}
-
-foreach $NumArgs (0 .. $#ARGV) { #Bucle per a dur a terme les operacions sobre tots els fitxers passats com a arguments
-  $DNA = &DNAParser($ARGV[$NumArgs]);#Cridem a la subrutina DNAParser, i el que retorna ho passem com a argument a la subrutina DNA2aa, que retornarà la proteina si tot va bé
-  if ($DNA eq "False"){
-    print "Error: la seqüència introduïda no corresponia a un gen de DNA\n";
-  } else{
-    print "Cadena traduïda: ".&DNA2aa($DNA)."\n";
+}else{
+  foreach $NumArgs (0 .. $#ARGV) { #Bucle per a dur a terme les operacions sobre tots els fitxers passats com a arguments
+    if($ARGV[$NumArgs] eq "--translate"){
+      $FromFile = "False"; #Si el primer argument és --translate, no procesarlo, pero canviar el comportament
+      next;
+    }
+    if($FromFile eq "False"){
+      $DNA = &DNAParser($ARGV[$NumArgs]);#Usa directament la seqüència des de l'argument, sense obrir un fitxer
+    }else{
+      $DNA = &DNAParser(&File2Line($ARGV[$NumArgs]));#Cridem a la subrutina DNAParser, i el que retorna ho passem com a argument a la subrutina DNA2aa, que retornarà la proteina si tot va bé
+    }
+    if($DNA eq "False"){
+      print "Error: la seqüència introduïda no corresponia a un gen de DNA\n";
+    }else{
+      print "Cadena traduïda: ".&DNA2aa($DNA)."\n"; #Tradueix i mostra la proteina resultant
+    }
   }
 }
