@@ -93,6 +93,10 @@ sub mtYeast {
 
 #Codi genetic per mitocondries de vertebrats
 sub mtVertebrate{
+  $CodiGenetic{'AGA'} = '_';
+  $CodiGenetic{'AGG'} = '_';
+  $CodiGenetic{'ATA'} = 'M';
+  $CodiGenetic{'TGA'} = 'W';
 }
 
 #Codi genetic per micoplasmes/spiroplames i mitocondries de molses, protozous, colenterats
