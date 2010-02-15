@@ -8,6 +8,8 @@
 $Usage = "Ús:\nperl script10.pl ARXIU1 [ARXIU2] [ARXIU3] ...\nO bé:\nperl script10.pl --translate SEQÜÈNCIA1 [SEQÜÈNCIA2] [SEQÜÈNCIA3] ...\n\nSi s'executa sense arguments, demanarà l'entrada manual de la seqüència d'un gen\n"; #Missatge d'ajuda per a l'ús de l'script
 $patro = 0; #Posició des d'on començar a llegir la cadena de DNA. Pot ser 0, 1 o 2. No gaire útil, per ara.
 
+#Canvi de prova
+
 %CodiGenetic = ( #Fem un Hash enmagatzemant el codi genetic
   'TCA'=>'S', #Serine
   'TCC'=>'S', #Serine
