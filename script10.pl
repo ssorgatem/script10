@@ -106,10 +106,18 @@ sub Mycoplasma{
 
 #Codi genetic per mitocondries d'invertebrats
 sub mtInvertebrate{
+  $CodiGenetic{''} = '';
+  $CodiGenetic{''} = '';
+  $CodiGenetic{''} = '';
+  $CodiGenetic{''} = '';
 }
 
 #Codi genetic per mitocondris d'ascidis
 sub mtAscidian{
+  $CodiGenetic{''} = '';
+  $CodiGenetic{''} = '';
+  $CodiGenetic{''} = '';
+  $CodiGenetic{''} = '';
 }
 
 sub File2Line{
