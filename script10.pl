@@ -154,10 +154,10 @@ sub DNAParser{ # Subrutina que procesa i valida la seqüència d'entrada
     print "La seqüència no está formada només per A,T,C o G, abortant\n"; #Si les trobem, no continuem
     return "False";
   }elsif(not($esInici)){ #Comprovem que comenci per un codó d'inici
-    print "La seqüència no comença per un codó d'inici!\n";#I si no ho fa, abortem
+    print "El codó inicial $PrimerCodo no és un codó d'inici!\n";#I si no ho fa, abortem
     return "False";
   }elsif($CodiGenetic{(substr($RawSeq, $SeqLen-3, 3))} ne "_"){ #Comprovem que acabi amb un codó de stop
-    print "La seqüència no acaba amb un codó de stop!\n";#I si no ho fa, abortem
+    print "El codó final ".(substr($RawSeq, $SeqLen-3, 3))." no és un codó de stop!\n";#I si no ho fa, abortem
     return "False";
   }else{ #Si no, seguim
     #Continuem...
@@ -186,6 +186,7 @@ sub DNA2aa { #Subrutina per a traduir la cadena de DNA prèviament validada i pr
 }
 
 #Aquí comença l'execució
+
 if($ARGV[0] eq "--code"){
   if($ARGV[1] eq "0"){
   }elsif($ARGV[1] eq "1"){
@@ -204,6 +205,7 @@ if($ARGV[0] eq "--code"){
   shift @ARGV;
   shift @ARGV;
 }
+
 until($ARGV[0] ne ""){
   print "Introduiu la seqüència de DNA d'un gen:\n";
   $escrita = <> ;
