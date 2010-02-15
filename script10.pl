@@ -77,6 +77,12 @@ $patro = 0; #Posició des d'on començar a llegir la cadena de DNA. Pot ser 0, 1
   'GGT'=>'G', #Glycine
 ); 
 
+#Diferents codis genetics estrests de: http://www.imb-jena.de/~sweta/genetic_code2/mitochondrial_code.html
+sub mtYeast {
+}
+sub {
+}
+
 sub File2Line{
   $Line = ""; #Inicialitza la variable on guardarem la seqüència, per a cada volta del bucle
   $File = $_[0]; #Aquest es el fitxer d'on treurem la seqüència
