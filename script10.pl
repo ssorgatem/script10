@@ -88,8 +88,6 @@ sub mtYeast {
   $CodiGenetic{'CGA'} = '_';
   $CodiGenetic{'CGC'} = '_';
 }
-sub {
-}
 
 sub File2Line{
   $Line = ""; #Inicialitza la variable on guardarem la seqüència, per a cada volta del bucle
@@ -152,6 +150,7 @@ if($ARGV[0] eq "--code"){
   print "kobabunga!";
   shift @ARGV;
   shift @ARGV;
+  &mtYeast();
 }
 until($ARGV[0] ne ""){
   print "Introduiu la seqüència de DNA d'un gen:\n";
