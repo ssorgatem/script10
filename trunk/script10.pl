@@ -39,9 +39,9 @@ $patro = 0; #Posició des d'on començar a llegir la cadena de DNA. Pot ser 0, 1
   'CGC'=>'R', #Arginine
   'CGG'=>'R', #Arginine
   'CGT'=>'R', #Arginine
-  'ATA'=>'T', #Isoleucine
-  'ATC'=>'T', #Isoleucine
-  'ATT'=>'T', #Isoleucine
+  'ATA'=>'I', #Isoleucine
+  'ATC'=>'I', #Isoleucine
+  'ATT'=>'I', #Isoleucine
   'ATG'=>'M', #Methionine #Start
   'ACA'=>'T', #Threonine
   'ACC'=>'T', #Threonine
@@ -79,6 +79,14 @@ $patro = 0; #Posició des d'on començar a llegir la cadena de DNA. Pot ser 0, 1
 
 #Diferents codis genetics estrests de: http://www.imb-jena.de/~sweta/genetic_code2/mitochondrial_code.html
 sub mtYeast {
+  $CodiGenetic{'ATA'} = 'M';
+  $CodiGenetic{'CTT'} = 'T';
+  $CodiGenetic{'CTC'} = 'T';
+  $CodiGenetic{'CTA'} = 'T';
+  $CodiGenetic{'CTG'} = 'T';
+  $CodiGenetic{'TGA'} = 'W';
+  $CodiGenetic{'CGA'} = '_';
+  $CodiGenetic{'CGC'} = '_';
 }
 sub {
 }
