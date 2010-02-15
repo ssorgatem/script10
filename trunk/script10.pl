@@ -99,6 +99,11 @@ sub mtVertebrate{
 sub Mycoplasma{
 }
 
+#Codi genetic per mitocondries d'invertebrats
+sub mtInvertebrate{
+}
+
+
 sub File2Line{
   $Line = ""; #Inicialitza la variable on guardarem la seqüència, per a cada volta del bucle
   $File = $_[0]; #Aquest es el fitxer d'on treurem la seqüència
