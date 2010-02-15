@@ -132,6 +132,9 @@ sub DNA2aa { #Subrutina per a traduir la cadena de DNA prèviament validada i pr
 }
 
 #Aquí comença l'execució
+if($ARGV[0] eq "--code"){
+  print "kobabunga!"
+}
 until($ARGV[0] ne ""){
   print "Introduiu la seqüència de DNA d'un gen:\n";
   $escrita = <> ;
