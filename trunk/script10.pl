@@ -1,12 +1,9 @@
 #!/usr/bin/perl -w
-
 #Script per a traduir una seqüència de DNA a proteines, comprobant que sigui DNA i que tingui els codons necesaris
 # Adrià Cereto Massagué <adrian.cereto@estudiants.urv.cat>, David Carrasco Flores <noemseelteuemail@estudiants.urv.cat>
 
-#TODO: DNAParser: definir tots els filtre per a determinar que sigui només un gen
-
 #Comencem a definir coses
-$Usage = "Ús:\nperl script10.pl [OPCIONS] ARXIU1 [ARXIU2] [ARXIU3] ...\nO bé:\nperl script10.pl --translate SEQÜÈNCIA1 [SEQÜÈNCIA2] [SEQÜÈNCIA3] ...\n\nPossibles opcions:\n\n--code [0-5]\n\nEls codis són:\n0: Codi genètic estàndard [per defecte]\n1: Mitocondri de llevat\n2: Mitocondri de vertebrat\n3: Micoplasma\n4: Mitocondri d'invertebrat\n5: Mitocondri d'ascidi\n\nSi s'executa sense arguments, demanarà l'entrada manual de la seqüència d'un gen\n"; #Missatge d'ajuda per a l'ús de l'script
+$Usage = "Ús:\nperl script10.pl [OPCIONS] ARXIU1 [ARXIU2] [ARXIU3] ...\nO bé:\nperl script10.pl --translate SEQÜÈNCIA1 [SEQÜÈNCIA2] [SEQÜÈNCIA3] ...\n\nPossibles opcions:\n\n--transl_table TRANS_TABLE\n\nEls valors de TRANSL_TABLE es poden trobar a http://www.ncbi.nlm.nih.gov/Taxonomy/Utils/wprintgc.cgi\n\nSi s'executa sense arguments, demanarà l'entrada manual de la seqüència d'un gen\n"; #Missatge d'ajuda per a l'ús de l'script
 $patro = 0; #Posició des d'on començar a llegir la cadena de DNA. Pot ser 0, 1 o 2. No gaire útil, per ara.
 
 #Codi genetic estandard
@@ -42,7 +39,7 @@ $patro = 0; #Posició des d'on començar a llegir la cadena de DNA. Pot ser 0, 1
   'ATA'=>'I', #Isoleucine
   'ATC'=>'I', #Isoleucine
   'ATT'=>'I', #Isoleucine
-  'ATG'=>'M', #Methionine #Start
+  'ATG'=>'M', #Methionine
   'ACA'=>'T', #Threonine
   'ACC'=>'T', #Threonine
   'ACG'=>'T', #Threonine
@@ -77,12 +74,22 @@ $patro = 0; #Posició des d'on començar a llegir la cadena de DNA. Pot ser 0, 1
   'GGT'=>'G', #Glycine
 ); 
 
-@CodoInicial = ("ATG","TTG","CTG");
+@CodoInicial = ("ATG","TTG","CTG");#Array dels codons inicials del codi genètic estàndard
 
-#Diferents codis genetics estrests de: http://www.ncbi.nlm.nih.gov/Taxonomy/Utils/wprintgc.cgi?mode=t#SG3 i http://www.imb-jena.de/~sweta/genetic_code2/mitochondrial_code.html
+#Diferents codis genetics estrests de: http://www.ncbi.nlm.nih.gov/Taxonomy/Utils/wprintgc.cgi?mode=t#SG3
+
+
+#Codi genetic per mitocondries de vertebrats
+sub mtVertebrate{	#transl_table=2
+  $CodiGenetic{'AGA'} = '_';
+  $CodiGenetic{'AGG'} = '_';
+  $CodiGenetic{'ATA'} = 'M';
+  $CodiGenetic{'TGA'} = 'W';
+  @CodoInicial = ("ATT","ATC","ATA","ATG","GTG");
+}
 
 #Codi genetic per mitocondries de llevats
-sub mtYeast {
+sub mtYeast {	#transl_table=3
   $CodiGenetic{'ATA'} = 'M';
   $CodiGenetic{'CTT'} = 'T';
   $CodiGenetic{'CTC'} = 'T';
@@ -94,23 +101,14 @@ sub mtYeast {
   @CodoInicial = ("ATA","ATG");
 }
 
-#Codi genetic per mitocondries de vertebrats
-sub mtVertebrate{
-  $CodiGenetic{'AGA'} = '_';
-  $CodiGenetic{'AGG'} = '_';
-  $CodiGenetic{'ATA'} = 'M';
-  $CodiGenetic{'TGA'} = 'W';
-  @CodoInicial = ("ATT","ATC","ATA","ATG","GTG");
-}
-
 #Codi genetic per micoplasmes/spiroplames i mitocondries de molses, protozous, colenterats
-sub Mycoplasma{
+sub Mycoplasma{	#transl_table=4
   $CodiGenetic{'TGA'} = 'W';
   @CodoInicial = ("TTA","TTG","CTG","ATT","ATC","ATA","ATG","GTG");
 }
 
 #Codi genetic per mitocondries d'invertebrats
-sub mtInvertebrate{
+sub mtInvertebrate{	#transl_table=5
   $CodiGenetic{'AGA'} = 'S';
   $CodiGenetic{'AGG'} = 'S';
   $CodiGenetic{'ATA'} = 'M';
@@ -118,13 +116,91 @@ sub mtInvertebrate{
   @CodoInicial = ("TTG","ATT","ATC","ATA","ATG","GTG");
 }
 
+#The Ciliate, Dasycladacean and Hexamita Nuclear Code
+sub Ciliate { #transl_table=6
+  $CodiGenetic{'TAA'} = 'Q';
+  $CodiGenetic{'TAG'} = 'Q';
+  @CodoInicial = ("ATG")
+}
+
+#The Echinoderm and Flatworm Mitochondrial Code
+sub mtEchinoderm { #transl_table=9
+  $CodiGenetic{'AAA'} = 'N';
+  $CodiGenetic{'AGA'} = 'S';
+  $CodiGenetic{'AGG'} = 'S';
+  $CodiGenetic{'TGA'} = 'W';
+  @CodoInicial = ("ATG","CTG")
+}
+
+#Euplotid Nuclear Code
+sub Euplotid { #transl_table=10
+  $CodiGenetic{'TGA'} = 'C';
+  @CodoInicial = ("ATG")
+}
+
+#Bacterial, Archaeal and Plant Plastid Code
+sub Plastid { #transl_table=11
+  @CodoInicial = ("TTG","CTG","ATT","ATC","ATA","ATG","GTG")
+}
+
+#Alternative Yeast Nuclear Code
+sub AltYeast { #transl_table=12
+  $CodiGenetic{'CTG'} = 'S';
+  @CodoInicial = ("ATG","CTG")
+}
+
 #Codi genetic per mitocondris d'ascidis
-sub mtAscidian{
+sub mtAscidian{	#transl_table=13
   $CodiGenetic{'AGA'} = 'G';
   $CodiGenetic{'AGG'} = 'G';
   $CodiGenetic{'ATA'} = 'M';
   $CodiGenetic{'TGA'} = 'W';
   @CodoInicial = ("TTG","ATA"."ATG","GTG");
+}
+
+#Alternative Flatworm Mitochondrial Code
+sub Flatworm { #transl_table=14
+  $CodiGenetic{'AAA'} = 'N';
+  $CodiGenetic{'AGA'} = 'S';
+  $CodiGenetic{'AGG'} = 'S';
+  $CodiGenetic{'TAA'} = 'Y';
+  $CodiGenetic{'TGA'} = 'W';
+  @CodoInicial = ("ATG")
+}
+
+#Blepharisma Nuclear Code
+sub Blepharisma { #transl_table=15
+  $CodiGenetic{'TAG'} = 'Q';
+  @CodoInicial = ("ATG")
+}
+
+#Chlorophycean Mitochondrial Code
+sub mtChlorophycean { #transl_table=16
+  $CodiGenetic{'TAG'} = 'L';
+  @CodoInicial = ("ATG")
+}
+
+#Trematode Mitochondrial Code
+sub mtTrematode { #transl_table=21
+  $CodiGenetic{'TGA'} = 'W';
+  $CodiGenetic{'ATA'} = 'M';
+  $CodiGenetic{'AGA'} = 'S';
+  $CodiGenetic{'AGG'} = 'S';
+  $CodiGenetic{'AAA'} = 'N';
+  @CodoInicial = ("ATG","GTG")
+}
+
+#Scenedesmus obliquus mitochondrial Code
+sub mtScenedesmus { #transl_table=22
+  $CodiGenetic{'TCA'} = '_';
+  $CodiGenetic{'TAG'} = 'L';
+  @CodoInicial = ("ATG")
+}
+
+#Thraustochytrium Mitochondrial Code
+sub mtThrau { #transl_table=23
+  $CodiGenetic{'TTA'} = '_';
+  @CodoInicial = ("ATG","ATT","GTG")
 }
 
 sub File2Line{
@@ -187,20 +263,42 @@ sub DNA2aa { #Subrutina per a traduir la cadena de DNA prèviament validada i pr
 
 #Aquí comença l'execució
 
-if($ARGV[0] eq "--code"){ #Per si volem fer servir un altre codi genètic
-  if($ARGV[1] eq "0"){ #Cada número executa la subrutina del codi corresponent
-  }elsif($ARGV[1] eq "1"){
-    &mtYeast()
+if($ARGV[0] eq "--transl_table"){ #Per si volem fer servir un altre codi genètic
+  if($ARGV[1] eq "1"){ #Cada número executa la subrutina del codi corresponent
   }elsif($ARGV[1] eq "2"){
     &mtVertebrate()
   }elsif($ARGV[1] eq "3"){
-    &Mycoplasma()
+    &mtYeast()
   }elsif($ARGV[1] eq "4"){
-    &mtInvertebrate()
+    &Mycoplasma()
   }elsif($ARGV[1] eq "5"){
+    &mtInvertebrate()
+  }elsif($ARGV[1] eq "6"){
+    &Ciliate()
+  }elsif($ARGV[1] eq "9"){
+    &mtEchinoderm()
+  }elsif($ARGV[1] eq "10"){
+    &Euplotid()
+  }elsif($ARGV[1] eq "11"){
+    &Plastid()
+  }elsif($ARGV[1] eq "12"){
+    &AltYeast()
+  }elsif($ARGV[1] eq "13"){
     &mtAscidian()
+  }elsif($ARGV[1] eq "14"){
+    &Flatworm()
+  }elsif($ARGV[1] eq "15"){
+    &Blepharisma()
+  }elsif($ARGV[1] eq "16"){
+    &mtChlorophycean()
+  }elsif($ARGV[1] eq "21"){
+    &mtTrematode()
+  }elsif($ARGV[1] eq "22"){
+    &mtScenedesmus()
+  }elsif($ARGV[1] eq "23"){
+    &mtThrau()
   }else{
-    die "Número de codi incorrecte\n$Usage"; #Número desconegut == morir
+    die "Número de taula de transcripció incorrecte\n$Usage"; #Número desconegut == morir
   }
   shift @ARGV; #Retirem els dos primers arguments (--code i el numero) per a processar la resta de forma normal
   shift @ARGV;
