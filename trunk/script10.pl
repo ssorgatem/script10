@@ -187,8 +187,8 @@ sub DNA2aa { #Subrutina per a traduir la cadena de DNA prèviament validada i pr
 
 #Aquí comença l'execució
 
-if($ARGV[0] eq "--code"){
-  if($ARGV[1] eq "0"){
+if($ARGV[0] eq "--code"){ #Per si volem fer servir un altre codi genètic
+  if($ARGV[1] eq "0"){ #Cada número executa la subrutina del codi corresponent
   }elsif($ARGV[1] eq "1"){
     &mtYeast()
   }elsif($ARGV[1] eq "2"){
@@ -200,9 +200,9 @@ if($ARGV[0] eq "--code"){
   }elsif($ARGV[1] eq "5"){
     &mtAscidian()
   }else{
-    die "Número de codi incorrecte\n";
+    die "Número de codi incorrecte\n$Usage"; #Número desconegut == morir
   }
-  shift @ARGV;
+  shift @ARGV; #Retirem els dos primers arguments (--code i el numero) per a processar la resta de forma normal
   shift @ARGV;
 }
 
