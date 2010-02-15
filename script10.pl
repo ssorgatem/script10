@@ -104,6 +104,14 @@ sub Mycoplasma{
   $CodiGenetic{'TGA'} = 'W';
 }
 
+#Codi genetic per mitocondries d'invertebrats
+sub mtInvertebrate{
+}
+
+#Codi genetic per mitocondris d'ascidis
+sub mtAscidian{
+}
+
 sub File2Line{
   $Line = ""; #Inicialitza la variable on guardarem la seqüència, per a cada volta del bucle
   $File = $_[0]; #Aquest es el fitxer d'on treurem la seqüència
