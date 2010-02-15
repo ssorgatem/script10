@@ -101,12 +101,8 @@ sub mtVertebrate{
 
 #Codi genetic per micoplasmes/spiroplames i mitocondries de molses, protozous, colenterats
 sub Mycoplasma{
+  $CodiGenetic{'TGA'} = 'W';
 }
-
-#Codi genetic per mitocondries d'invertebrats
-sub mtInvertebrate{
-}
-
 
 sub File2Line{
   $Line = ""; #Inicialitza la variable on guardarem la seqüència, per a cada volta del bucle
