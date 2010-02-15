@@ -1,4 +1,5 @@
 #!/usr/bin/perl -w
+
 #Script per a traduir una seqüència de DNA a proteines, comprobant que sigui DNA i que tingui els codons necesaris
 # Adrià Cereto Massagué <adrian.cereto@estudiants.urv.cat>, David Carrasco Flores <noemseelteuemail@estudiants.urv.cat>
 
@@ -8,8 +9,7 @@
 $Usage = "Ús:\nperl script10.pl ARXIU1 [ARXIU2] [ARXIU3] ...\nO bé:\nperl script10.pl --translate SEQÜÈNCIA1 [SEQÜÈNCIA2] [SEQÜÈNCIA3] ...\n\nSi s'executa sense arguments, demanarà l'entrada manual de la seqüència d'un gen\n"; #Missatge d'ajuda per a l'ús de l'script
 $patro = 0; #Posició des d'on començar a llegir la cadena de DNA. Pot ser 0, 1 o 2. No gaire útil, per ara.
 
-#Canvi de prova
-
+#Codi genetic estandard
 %CodiGenetic = ( #Fem un Hash enmagatzemant el codi genetic
   'TCA'=>'S', #Serine
   'TCC'=>'S', #Serine
@@ -78,6 +78,8 @@ $patro = 0; #Posició des d'on començar a llegir la cadena de DNA. Pot ser 0, 1
 ); 
 
 #Diferents codis genetics estrests de: http://www.imb-jena.de/~sweta/genetic_code2/mitochondrial_code.html
+
+#Codi genetic per mitocondries de llevats
 sub mtYeast {
   $CodiGenetic{'ATA'} = 'M';
   $CodiGenetic{'CTT'} = 'T';
@@ -87,6 +89,14 @@ sub mtYeast {
   $CodiGenetic{'TGA'} = 'W';
   $CodiGenetic{'CGA'} = '_';
   $CodiGenetic{'CGC'} = '_';
+}
+
+#Codi genetic per mitocondries de vertebrats
+sub mtVertebrate{
+}
+
+#Codi genetic per micoplasmes/spiroplames i mitocondries de molses, protozous, colenterats
+sub Mycoplasma{
 }
 
 sub File2Line{
