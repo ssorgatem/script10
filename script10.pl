@@ -6,7 +6,7 @@
 #TODO: DNAParser: definir tots els filtre per a determinar que sigui només un gen
 
 #Comencem a definir coses
-$Usage = "Ús:\nperl script10.pl ARXIU1 [ARXIU2] [ARXIU3] ...\nO bé:\nperl script10.pl --translate SEQÜÈNCIA1 [SEQÜÈNCIA2] [SEQÜÈNCIA3] ...\n\nSi s'executa sense arguments, demanarà l'entrada manual de la seqüència d'un gen\n"; #Missatge d'ajuda per a l'ús de l'script
+$Usage = "Ús:\nperl script10.pl [OPCIONS] ARXIU1 [ARXIU2] [ARXIU3] ...\nO bé:\nperl script10.pl --translate SEQÜÈNCIA1 [SEQÜÈNCIA2] [SEQÜÈNCIA3] ...\n\nPossibles opcions:\n\n--code [0-5]\n\nEls codis són:\n0: Codi genètic estàndard [per defecte]\n1: Mitocondri de llevat\n2: Mitocondri de vertebrat\n3: Micoplasma\n4: Mitocondri d'invertebrat\n5: Mitocondri d'ascidi\n\nSi s'executa sense arguments, demanarà l'entrada manual de la seqüència d'un gen\n"; #Missatge d'ajuda per a l'ús de l'script
 $patro = 0; #Posició des d'on començar a llegir la cadena de DNA. Pot ser 0, 1 o 2. No gaire útil, per ara.
 
 #Codi genetic estandard
@@ -77,7 +77,9 @@ $patro = 0; #Posició des d'on començar a llegir la cadena de DNA. Pot ser 0, 1
   'GGT'=>'G', #Glycine
 ); 
 
-#Diferents codis genetics estrests de: http://www.imb-jena.de/~sweta/genetic_code2/mitochondrial_code.html
+@CodoInicial = ("ATG","TTG","CTG");
+
+#Diferents codis genetics estrests de: http://www.ncbi.nlm.nih.gov/Taxonomy/Utils/wprintgc.cgi?mode=t#SG3 i http://www.imb-jena.de/~sweta/genetic_code2/mitochondrial_code.html
 
 #Codi genetic per mitocondries de llevats
 sub mtYeast {
@@ -87,8 +89,9 @@ sub mtYeast {
   $CodiGenetic{'CTA'} = 'T';
   $CodiGenetic{'CTG'} = 'T';
   $CodiGenetic{'TGA'} = 'W';
-  $CodiGenetic{'CGA'} = '_';
-  $CodiGenetic{'CGC'} = '_';
+  $CodiGenetic{'CGA'} = '-';#Absent
+  $CodiGenetic{'CGC'} = '-';#Absent
+  @CodoInicial = ("ATA","ATG");
 }
 
 #Codi genetic per mitocondries de vertebrats
@@ -97,11 +100,13 @@ sub mtVertebrate{
   $CodiGenetic{'AGG'} = '_';
   $CodiGenetic{'ATA'} = 'M';
   $CodiGenetic{'TGA'} = 'W';
+  @CodoInicial = ("ATT","ATC","ATA","ATG","GTG");
 }
 
 #Codi genetic per micoplasmes/spiroplames i mitocondries de molses, protozous, colenterats
 sub Mycoplasma{
   $CodiGenetic{'TGA'} = 'W';
+  @CodoInicial = ("TTA","TTG","CTG","ATT","ATC","ATA","ATG","GTG");
 }
 
 #Codi genetic per mitocondries d'invertebrats
@@ -110,6 +115,7 @@ sub mtInvertebrate{
   $CodiGenetic{'AGG'} = 'S';
   $CodiGenetic{'ATA'} = 'M';
   $CodiGenetic{'TGA'} = 'W';
+  @CodoInicial = ("TTG","ATT","ATC","ATA","ATG","GTG");
 }
 
 #Codi genetic per mitocondris d'ascidis
@@ -118,6 +124,7 @@ sub mtAscidian{
   $CodiGenetic{'AGG'} = 'G';
   $CodiGenetic{'ATA'} = 'M';
   $CodiGenetic{'TGA'} = 'W';
+  @CodoInicial = ("TTG","ATA"."ATG","GTG");
 }
 
 sub File2Line{
@@ -137,14 +144,16 @@ sub DNAParser{ # Subrutina que procesa i valida la seqüència d'entrada
   #Ara toca començar-ne el procesament
   $RawSeq = uc $_[0]; #Passem a majúscules
   $SeqLen = length $RawSeq;#Calculem la longitud de la cadena
+  $PrimerCodo = substr($RawSeq, $patro, 3); #Llegim i enmagatzemem el primer codo per la seva posterior comprovació
+  $esInici = grep(/$PrimerCodo$/,@CodoInicial);#Comprovem que comenci per un codó d'inici
 
   if ( $SeqLen%3 != 0){ #Comprovem si és divisible entre 3, i si no ho és abortem
     print "seqüència incompleta! No és múltiple de 3\nAbortant...\n";
     return "False"
-  } elsif($RawSeq =~ /[^ACGT]/g){ #Ara busquem bases que no siguin A,C,G o T
+  } elsif($RawSeq =~ /[^ACGT]/g){ #Ara busquem bases que no sigui(substr($RawSeq, $patro, 3))n A,C,G o T
     print "La seqüència no está formada només per A,T,C o G, abortant\n"; #Si les trobem, no continuem
     return "False";
-  }elsif((substr($RawSeq, $patro, 3)) ne "ATG"){ #Comprovem que comenci per un codó d'inici
+  }elsif(not($esInici)){ #Comprovem que comenci per un codó d'inici
     print "La seqüència no comença per un codó d'inici!\n";#I si no ho fa, abortem
     return "False";
   }elsif($CodiGenetic{(substr($RawSeq, $SeqLen-3, 3))} ne "_"){ #Comprovem que acabi amb un codó de stop
@@ -178,10 +187,22 @@ sub DNA2aa { #Subrutina per a traduir la cadena de DNA prèviament validada i pr
 
 #Aquí comença l'execució
 if($ARGV[0] eq "--code"){
-  print "kobabunga!";
+  if($ARGV[1] eq "0"){
+  }elsif($ARGV[1] eq "1"){
+    &mtYeast()
+  }elsif($ARGV[1] eq "2"){
+    &mtVertebrate()
+  }elsif($ARGV[1] eq "3"){
+    &Mycoplasma()
+  }elsif($ARGV[1] eq "4"){
+    &mtInvertebrate()
+  }elsif($ARGV[1] eq "5"){
+    &mtAscidian()
+  }else{
+    die "Número de codi incorrecte\n";
+  }
   shift @ARGV;
   shift @ARGV;
-  &mtYeast();
 }
 until($ARGV[0] ne ""){
   print "Introduiu la seqüència de DNA d'un gen:\n";
