@@ -4,7 +4,18 @@ use Getopt::Long; #S'emprara la funció Getopt per recuperar els arguments de l'
 # Adrià Cereto Massagué <adrian.cereto@estudiants.urv.cat>, David Carrasco Flores <noemseelteuemail@estudiants.urv.cat>
 
 #Comencem a definir coses
-$Usage = "Ús:\nperl script10.pl [OPCIONS] ARXIU1 [ARXIU2] [ARXIU3] ...\nO bé:\nperl script10.pl --translate SEQÜÈNCIA1 [SEQÜÈNCIA2] [SEQÜÈNCIA3] ...\n\nPossibles opcions:\n\n--transl_table TRANS_TABLE\n\nEls valors de TRANSL_TABLE es poden trobar a http://www.ncbi.nlm.nih.gov/Taxonomy/Utils/wprintgc.cgi\n\nSi s'executa sense arguments, demanarà l'entrada manual de la seqüència d'un gen\n"; #Missatge d'ajuda per a l'ús de l'script
+$Usage = "Ús:
+    perl script10.pl [OPCIONS] ARXIU1 [ARXIU2] [ARXIU3] ...
+O bé:
+    perl script10.pl --translate SEQÜÈNCIA1 [SEQÜÈNCIA2] [SEQÜÈNCIA3] ...
+
+Possibles opcions:
+
+    --transl_table TRANS_TABLE
+      Els valors de TRANSL_TABLE es poden trobar a http://www.ncbi.nlm.nih.gov/Taxonomy/Utils/wprintgc.cgi
+
+Si s'executa sense arguments, demanarà l'entrada manual de la seqüència d'un gen\n"; #Missatge d'ajuda per a l'ús de l'script
+
 $patro = 0; #Posició des d'on començar a llegir la cadena de DNA. Pot ser 0, 1 o 2. No gaire útil, per ara.
 
 $transl_table=1; #Declaració de la variable per la taula de traducció del DNA
@@ -241,7 +252,7 @@ sub DNAParser{ # Subrutina que procesa i valida la seqüència d'entrada
     return "False";
   }else{ #Si no, seguim
     #Continuem...
-    print "\nCadena de DNA: "."$RawSeq \n"; #Mostrem el contingut de la variable.
+    print "Cadena de DNA: "."$RawSeq \n"; #Mostrem el contingut de la variable.
     return $RawSeq;
   }
 }
@@ -299,25 +310,20 @@ sub recupera_ARGV{
 #Aquí comença l'execució
 &recupera_ARGV;
 
-print "Es traduirà segons la taula $transl_table \n";
-
 eval{
   $CodisGenetics{$transl_table}();
+  print "Es traduirà segons la taula $transl_table \n";
 } or die "Número de taula de transcripció incorrecta\n$Usage";
 
 if(@translate){
   print "translate te un valor\n";
   print "@translate\n";
-} else {
+}else{
   if(@ARGV){
-    print "Hi ha com a minim un fitxer d'origen\n";
     foreach $ARGV(@ARGV){
-    print "fitxer: $ARGV\n";
-    @translate=(@translate,&File2Line($ARGV));
+      @translate=(@translate,&File2Line($ARGV));
     }
-  print "\n\n\n@translate\n\n\n";
   }else{
-    print "translate no establert\n";
     print "Introduiu la seqüència de DNA d'un gen:\n";
     $escrita = <> ;
     chomp $escrita;
@@ -327,10 +333,12 @@ if(@translate){
 }
 
 foreach $translate(@translate){
+print "\n\n----------------------------------------\n";
   $DNA = &DNAParser($translate);
   if($DNA eq "False"){
     print "Error: la seqüència introduïda no corresponia a un gen de DNA\n";
   }else{
     print "Cadena traduïda: ".&DNA2aa($DNA)."\n"; #Tradueix i mostra la proteina resultant
   }
+  print "----------------------------------------\n";
 }
