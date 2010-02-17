@@ -18,7 +18,7 @@ Si s'executa sense arguments, demanarà l'entrada manual de la seqüència d'un 
 
 $patro = 0; #Posició des d'on començar a llegir la cadena de DNA. Pot ser 0, 1 o 2. No gaire útil, per ara.
 
-$trans_table; #Declaració de la variable per la taula de traducció del DNA
+$transl_table=1; #Declaració de la variable per la taula de traducció del DNA
 
 @translate; #Array per les possibles cadenes de DNA a traduir
 
@@ -94,7 +94,6 @@ $trans_table; #Declaració de la variable per la taula de traducció del DNA
 
 #Diferents codis genetics estrests de: http://www.ncbi.nlm.nih.gov/Taxonomy/Utils/wprintgc.cgi?mode=t#SG3
 
-
 #Codi genetic per mitocondries de vertebrats
 sub mtVertebrate{	#transl_table=2
   $CodiGenetic{'AGA'} = '_';
@@ -139,7 +138,7 @@ sub Ciliate { #transl_table=6
   @CodoInicial = ("ATG")
 }
 
-#The Echinoderm and Flatworm Mitochondrial Code
+#The Echinoderm and mtFlatworm Mitochondrial Code
 sub mtEchinoderm { #transl_table=9
   $CodiGenetic{'AAA'} = 'N';
   $CodiGenetic{'AGA'} = 'S';
@@ -174,8 +173,8 @@ sub mtAscidian{	#transl_table=13
   @CodoInicial = ("TTG","ATA","ATG","GTG");
 }
 
-#Alternative Flatworm Mitochondrial Code
-sub Flatworm { #transl_table=14
+#Alternative mtFlatworm Mitochondrial Code
+sub mtFlatworm { #transl_table=14
   $CodiGenetic{'AAA'} = 'N';
   $CodiGenetic{'AGA'} = 'S';
   $CodiGenetic{'AGG'} = 'S';
@@ -214,7 +213,7 @@ sub mtScenedesmus { #transl_table=22
 }
 
 #Thraustochytrium Mitochondrial Code
-sub mtThrau { #transl_table=23
+sub mtThraustochytrium { #transl_table=23
   $CodiGenetic{'TTA'} = '_';
   @CodoInicial = ("ATG","ATT","GTG")
 }
@@ -277,60 +276,41 @@ sub DNA2aa { #Subrutina per a traduir la cadena de DNA prèviament validada i pr
   return $Proteina; #Retornem la proteina
 }
 
-sub recupera_ARGV {
-  eval{
-    $SIG{__WARN__}= sub {
-      print $Usage;
-      die;
-    };
-    
-    GetOptions ('translate=s' => \@translate);
-    GetOptions ('trans_table=i' => \$trans_table);
-
-  };
+sub recupera_ARGV{
+  $SIG{__WARN__}= sub {die $Usage;};
+  GetOptions(
+    'transl_table=i' => \$transl_table,
+    'translate=s' => \@translate
+  );
+  print "Es traduirà segons la taula $transl_table \n";
 }
+
+#Et comento
+%CodisGenetics = (
+  "1"=>sub {print "Emprant el genoma estàndard\n" },
+  "2"=>\&mtVertebrate,
+  "3"=>\&mtYeast,
+  "4"=>\&Mycoplasma,
+  "5"=>\&mtInvertebrate,
+  "6"=>\&Ciliate,
+  "9"=>\&mtEchinoderm,
+  "10"=>\&Euplotid,
+  "11"=>\&Plastid,
+  "12"=>\&AltYeast,
+  "13"=>\&mtAscidian,
+  "14"=>\&mtFlatworm,
+  "15"=>\&Blepharisma,
+  "16"=>\&mtChlorophycean,
+  "21"=>\&mtTrematode,
+  "22"=>\&mtScenedesmus,
+  "23"=>\&mtThraustochytrium,
+);
+
 #Aquí comença l'execució
 
-if($ARGV[0] eq "--transl_table"){ #Per si volem fer servir un altre codi genètic
-  if($ARGV[1] eq "1"){ #Cada número executa la subrutina del codi corresponent
-  }elsif($ARGV[1] eq "2"){
-    &mtVertebrate()
-  }elsif($ARGV[1] eq "3"){
-    &mtYeast()
-  }elsif($ARGV[1] eq "4"){
-    &Mycoplasma()
-  }elsif($ARGV[1] eq "5"){
-    &mtInvertebrate()
-  }elsif($ARGV[1] eq "6"){
-    &Ciliate()
-  }elsif($ARGV[1] eq "9"){
-    &mtEchinoderm()
-  }elsif($ARGV[1] eq "10"){
-    &Euplotid()
-  }elsif($ARGV[1] eq "11"){
-    &Plastid()
-  }elsif($ARGV[1] eq "12"){
-    &AltYeast()
-  }elsif($ARGV[1] eq "13"){
-    &mtAscidian()
-  }elsif($ARGV[1] eq "14"){
-    &Flatworm()
-  }elsif($ARGV[1] eq "15"){
-    &Blepharisma()
-  }elsif($ARGV[1] eq "16"){
-    &mtChlorophycean()
-  }elsif($ARGV[1] eq "21"){
-    &mtTrematode()
-  }elsif($ARGV[1] eq "22"){
-    &mtScenedesmus()
-  }elsif($ARGV[1] eq "23"){
-    &mtThrau()
-  }else{
-    die "Número de taula de transcripció incorrecte\n$Usage"; #Número desconegut == morir
-  }
-  shift @ARGV; #Retirem els dos primers arguments (--code i el numero) per a processar la resta de forma normal
-  shift @ARGV;
-}
+eval{
+$CodisGenetics{$transl_table}();
+} or die "Número de taula de transcripció incorrecte\n$Usage";
 
 until($ARGV[0] ne ""){
   print "Introduiu la seqüència de DNA d'un gen:\n";
