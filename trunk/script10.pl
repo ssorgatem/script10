@@ -155,7 +155,7 @@ sub mtAscidian{	#transl_table=13
   $CodiGenetic{'AGG'} = 'G';
   $CodiGenetic{'ATA'} = 'M';
   $CodiGenetic{'TGA'} = 'W';
-  @CodoInicial = ("TTG","ATA"."ATG","GTG");
+  @CodoInicial = ("TTG","ATA","ATG","GTG");
 }
 
 #Alternative Flatworm Mitochondrial Code
