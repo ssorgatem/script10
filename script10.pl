@@ -331,7 +331,6 @@ eval{
 } or die "Número de taula de transcripció incorrecta\n$Usage";
 
 if(@translate){
-  print "translate te un valor\n";
   print "@translate\n";
 }else{
   if(@ARGV){
