@@ -207,7 +207,7 @@ sub File2Line{
   $Line = ""; #Inicialitza la variable on guardarem la seqüència, per a cada volta del bucle
   $File = $_[0]; #Aquest es el fitxer d'on treurem la seqüència
   print "Llegint $File"."... ";
-  open INPUT, "<$File" || return "False";  # Obre el fitxer d'entrada
+  open(INPUT,"<","$File")|| return "False";  # Obre el fitxer d'entrada
   while ($line = <INPUT>){ #Bucle per passar les línies sense \n a la variable $RawSeq
     chomp $line; #Treiem el canvi de linia de cada linia
     $Line .= $line; #Afegim la linia a la cadena
