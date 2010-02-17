@@ -96,6 +96,7 @@ $transl_table=1; #Declaració de la variable per la taula de traducció del DNA
 
 #Codi genetic per mitocondries de vertebrats
 sub mtVertebrate{	#transl_table=2
+  print "Es traduirà segons el genoma mitocondrial de vertebrats\n";
   $CodiGenetic{'AGA'} = '_';
   $CodiGenetic{'AGG'} = '_';
   $CodiGenetic{'ATA'} = 'M';
@@ -105,6 +106,7 @@ sub mtVertebrate{	#transl_table=2
 
 #Codi genetic per mitocondries de llevats
 sub mtYeast {	#transl_table=3
+  print "Es traduirà segons el genoma mitocondrial de llevats\n";
   $CodiGenetic{'ATA'} = 'M';
   $CodiGenetic{'CTT'} = 'T';
   $CodiGenetic{'CTC'} = 'T';
@@ -118,12 +120,14 @@ sub mtYeast {	#transl_table=3
 
 #Codi genetic per micoplasmes/spiroplames i mitocondries de molses, protozous, colenterats
 sub Mycoplasma{	#transl_table=4
+  print "Es traduirà segons el genoma de micoplasmes/spiroplasmes i de mitocondris de molses, protozous i colenterats\n";
   $CodiGenetic{'TGA'} = 'W';
   @CodoInicial = ("TTA","TTG","CTG","ATT","ATC","ATA","ATG","GTG");
 }
 
 #Codi genetic per mitocondries d'invertebrats
 sub mtInvertebrate{	#transl_table=5
+  print "Es traduirà segons el genoma mitocondral d'invertebrats\n";
   $CodiGenetic{'AGA'} = 'S';
   $CodiGenetic{'AGG'} = 'S';
   $CodiGenetic{'ATA'} = 'M';
@@ -133,6 +137,7 @@ sub mtInvertebrate{	#transl_table=5
 
 #The Ciliate, Dasycladacean and Hexamita Nuclear Code
 sub Ciliate { #transl_table=6
+  print "Es traduirà segons el genoma dels ciliats, dasicladacis i hexamites\n";
   $CodiGenetic{'TAA'} = 'Q';
   $CodiGenetic{'TAG'} = 'Q';
   @CodoInicial = ("ATG")
@@ -140,6 +145,7 @@ sub Ciliate { #transl_table=6
 
 #The Echinoderm and mtFlatworm Mitochondrial Code
 sub mtEchinoderm { #transl_table=9
+  print "Es traduirà segons el genoma d'equinoderms i de mitocondris de plathielmints\n";
   $CodiGenetic{'AAA'} = 'N';
   $CodiGenetic{'AGA'} = 'S';
   $CodiGenetic{'AGG'} = 'S';
@@ -149,23 +155,27 @@ sub mtEchinoderm { #transl_table=9
 
 #Euplotid Nuclear Code
 sub Euplotid { #transl_table=10
+  print "Es traduirà segons el genoma dels euplòtids\n";
   $CodiGenetic{'TGA'} = 'C';
   @CodoInicial = ("ATG")
 }
 
 #Bacterial, Archaeal and Plant Plastid Code
 sub Plastid { #transl_table=11
+  print "Es traduirà segons el genoma de bacteris, arquees i plastos vegetals\n";
   @CodoInicial = ("TTG","CTG","ATT","ATC","ATA","ATG","GTG")
 }
 
 #Alternative Yeast Nuclear Code
 sub AltYeast { #transl_table=12
+  print "Es traduirà segons el genoma alternatiu de llevats\n";
   $CodiGenetic{'CTG'} = 'S';
   @CodoInicial = ("ATG","CTG")
 }
 
 #Codi genetic per mitocondris d'ascidis
 sub mtAscidian{	#transl_table=13
+  print "Es traduirà segons el genoma mitocondrial d'ascidis\n";
   $CodiGenetic{'AGA'} = 'G';
   $CodiGenetic{'AGG'} = 'G';
   $CodiGenetic{'ATA'} = 'M';
@@ -174,7 +184,8 @@ sub mtAscidian{	#transl_table=13
 }
 
 #Alternative mtFlatworm Mitochondrial Code
-sub mtFlatworm { #transl_table=14
+sub mtAltFlatworm { #transl_table=14
+  print "Es traduirà segons el genoma mitocondrial alternatiu de plathielmints\n";
   $CodiGenetic{'AAA'} = 'N';
   $CodiGenetic{'AGA'} = 'S';
   $CodiGenetic{'AGG'} = 'S';
@@ -185,18 +196,21 @@ sub mtFlatworm { #transl_table=14
 
 #Blepharisma Nuclear Code
 sub Blepharisma { #transl_table=15
+  print "Es traduirà segons el genoma de blefarismes\n";
   $CodiGenetic{'TAG'} = 'Q';
   @CodoInicial = ("ATG")
 }
 
 #Chlorophycean Mitochondrial Code
 sub mtChlorophycean { #transl_table=16
+  print "Es traduirà segons el genoma mitocondrial de clorofícies\n";
   $CodiGenetic{'TAG'} = 'L';
   @CodoInicial = ("ATG")
 }
 
 #Trematode Mitochondrial Code
 sub mtTrematode { #transl_table=21
+  print "Es traduirà segons el genoma mitocondrial de tremàtodes\n";
   $CodiGenetic{'TGA'} = 'W';
   $CodiGenetic{'ATA'} = 'M';
   $CodiGenetic{'AGA'} = 'S';
@@ -207,6 +221,7 @@ sub mtTrematode { #transl_table=21
 
 #Scenedesmus obliquus mitochondrial Code
 sub mtScenedesmus { #transl_table=22
+  print "Es traduirà segons el genoma mitocondrial de Scenedesmus obliquus\n";
   $CodiGenetic{'TCA'} = '_';
   $CodiGenetic{'TAG'} = 'L';
   @CodoInicial = ("ATG")
@@ -214,6 +229,7 @@ sub mtScenedesmus { #transl_table=22
 
 #Thraustochytrium Mitochondrial Code
 sub mtThraustochytrium { #transl_table=23
+  print "Es traduirà segons el genoma mitocondrial de Thraustochytrium sp.\n";
   $CodiGenetic{'TTA'} = '_';
   @CodoInicial = ("ATG","ATT","GTG")
 }
@@ -288,7 +304,7 @@ sub recupera_ARGV{
 
 #Et comento
 %CodisGenetics = (
-  "1"=>sub {print "Emprant el genoma estàndard\n" },
+  "1"=>sub {print "Es traduirà segons el genoma estàndard\n" },
   "2"=>\&mtVertebrate,
   "3"=>\&mtYeast,
   "4"=>\&Mycoplasma,
@@ -312,7 +328,6 @@ sub recupera_ARGV{
 
 eval{
   $CodisGenetics{$transl_table}();
-  print "Es traduirà segons la taula $transl_table \n";
 } or die "Número de taula de transcripció incorrecta\n$Usage";
 
 if(@translate){
