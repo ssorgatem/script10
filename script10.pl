@@ -4,27 +4,29 @@ use Getopt::Long; #S'emprara la funció Getopt per recuperar els arguments de l'
 # Adrià Cereto Massagué <adrian.cereto@estudiants.urv.cat>, David Carrasco Flores <noemseelteuemail@estudiants.urv.cat>
 
 #Comencem a definir coses
+$output_file=0; #Guardar a un fitxer? Per defecte no
+$output_filename = ''; #Nom del fitxer a guardar
+$postfix ="_translated.txt"; #Postfix del nom de la traducció
+
 $Usage = "Ús:
     perl script10.pl [OPCIONS] ARXIU1 [ARXIU2] [ARXIU3] ...
-O bé:
-    perl script10.pl --translate SEQÜÈNCIA1 [SEQÜÈNCIA2] [SEQÜÈNCIA3] ...
 
 Possibles opcions:
+
+    --translate SEQÜÈNCIA
+      Es traduirà SEQÜÈNCIA directament, en comptes de llegir arxius o demanar la introducció d'una seqüència.
 
     --transl_table TRANS_TABLE
       Els valors de TRANSL_TABLE es poden trobar a http://www.ncbi.nlm.nih.gov/Taxonomy/Utils/wprintgc.cgi
 
-    --output FILE
+    --output|save 
+      Guarda la seqüència traduïda a 'ARXIU$postfix ', o 'Manual_DNA_entry$postfix ' o 'DNA$postfix ', segons el mètode d'entrada.
+
+Totes les opcions són combinables.
 
 Si s'executa sense arguments, demanarà l'entrada manual de la seqüència d'un gen\n"; #Missatge d'ajuda per a l'ús de l'script
 
 $patro = 0; #Posició des d'on començar a llegir la cadena de DNA. Pot ser 0, 1 o 2. No gaire útil, per ara.
-
-$transl_table=1; #Declaració de la variable per la taula de traducció del DNA
-
-@translate; #Array per les possibles cadenes de DNA a traduir
-
-$output_file='';
 
 #Codi genetic estandard
 %CodiGenetic = ( #Fem un Hash enmagatzemant el codi genetic
@@ -296,19 +298,21 @@ sub DNA2aa { #Subrutina per a traduir la cadena de DNA prèviament validada i pr
 }
 
 sub recupera_ARGV{
-  $SIG{__WARN__}= sub {die $Usage;};
+  $SIG{__WARN__}= sub {die "Opció incorrecta.\n$Usage";};
   GetOptions(
     'help|?',
     'transl_table=i' => \$transl_table,
-    'translate=s' => \@translate,
-    'output=s' => \$output_file
+    'translate=s' => \$translate,
+    'output|save' => \$output_file
   );
-  if($opt_help){die $Usage;};
+  if($opt_help){
+    die $Usage;
+  };
 }
 
 #Et comento
 %CodisGenetics = (
-  "1"=>sub {print "Es traduirà segons el genoma estàndard\n" },
+  "1"=>sub {print "" },
   "2"=>\&mtVertebrate,
   "3"=>\&mtYeast,
   "4"=>\&Mycoplasma,
@@ -328,49 +332,52 @@ sub recupera_ARGV{
 );
 
 #Aquí comença l'execució
+
 &recupera_ARGV;
+# foreach $a (@ARGV){ print "$a\n";}
 
 eval{
-  $CodisGenetics{$transl_table}();
+  if($transl_table){
+    $CodisGenetics{$transl_table}();
+    $postfix = "_transl_table=$transl_table.txt";
+  }
 } or die "Número de taula de transcripció incorrecta\n$Usage";
 
-if(@translate){
-  print "@translate\n";
+if($translate){
+  @Args = ($translate);
+}elsif (not(@ARGV)){
+  print "Introduiu la seqüència de DNA d'un gen:\n";
+  $escrita = <> ;
+  chomp $escrita;
+  @Args = $escrita;
+  $translate = 1;
+  $output_filename = "Manual_DNA_entry".$postfix;
 }else{
-  if(@ARGV){
-    foreach $ARGV(@ARGV){
-      @translate=(@translate,&File2Line($ARGV));
-    }
-  }else{
-    print "Introduiu la seqüència de DNA d'un gen:\n";
-    $escrita = <> ;
-    chomp $escrita;
-    @translate=$escrita;
-    print "@translate\n";
-  }
+  @Args = @ARGV;
 }
-
-foreach $translate(@translate){
-  $DNA = &DNAParser($translate);  
-  if($output_file ne ''){
-     open (FITXER, '>>', $output_file);
-     print FITXER "----------------------------------------\n";
-     if($DNA eq "False"){
-       print FITXER "Error: la seqüència introduïda no corresponia a un gen de DNA\n";
-     }else{
-       print FITXER "Cadena original:$DNA\n\n";
-       print FITXER "Cadena traduïda: ".&DNA2aa($DNA)."\n"; #Tradueix i mostra la proteina resultant
-     }
-     print FITXER "----------------------------------------\n\n\n";
-     close (FITXER);
-    }else{
-     print "\n\n----------------------------------------\n";
-     if($DNA eq "False"){
-       print "Error: la seqüència introduïda no corresponia a un gen de DNA\n";
-     }else{
-      print "Cadena original:$DNA\n\n";
-       print "Cadena traduïda: ".&DNA2aa($DNA)."\n"; #Tradueix i mostra la proteina resultant
-     }
-     print "----------------------------------------\n";
-   }
+foreach $argument (@Args){
+  if($translate){
+    $output_filename = "DNA".$postfix;
+    $translatable=$argument;
+  }else{
+    $translatable=&File2Line($argument); #¿¿Estaves fent un array amb tooots els DNA traduits per passar-ho al següent foreach??
+  }
+  $DNA = &DNAParser($translatable);  
+  if($DNA eq "False"){
+    print "Error: la seqüència introduïda no corresponia a un gen de DNA\n";
+  }else{
+    $Prot = &DNA2aa($DNA); #Traduim el DNA
+    if($output_file){ #Si cal guardar-ho a un fitxer
+      if ($output_filename eq ''){
+	$output_filename = $argument.$postfix;
+      }
+      open (FITXER, '>', $output_filename); #No volem afegir coses al fitxer, sinó sobreescriure'l. Era bonic fer un fitxer amb l'output de la consola, pero és poc pràctic. És més útil fer un fitxer per cada seqncia proteica, que només tingui la cadena d'aminoàcids
+      print FITXER $Prot."\n"; #Guarda la proteina resultant
+      close (FITXER);
+    }
+  print "--------------------------------------------------------------------------------\n";
+  print "Cadena original: $DNA\n\n";#Mostra la cadena original
+  print "Cadena traduïda: $Prot\n"; #Mostra la proteina resultant
+  print "--------------------------------------------------------------------------------\n";
+  } 
 }

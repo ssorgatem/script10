@@ -2,10 +2,13 @@
 # -*- coding: utf-8 -*-
 #Script per a traduir una seqüència de DNA a proteines, comprobant que sigui DNA i que tingui els codons necesaris
 # Adrià Cereto Massagué <adrian.cereto@estudiants.urv.cat>
-import re,sys
+
+import re,sys,getopt
+
 #Comencem a definir coses
 Usage = "Ús:\npython script10.py [OPCIONS] ARXIU1 [ARXIU2] [ARXIU3] ...\nO bé:\npython script10.py --translate SEQÜÈNCIA1 [SEQÜÈNCIA2] [SEQÜÈNCIA3] ...\n\nPossibles opcions:\n\n--transl_table TRANS_TABLE\n\nEls valors de TRANSL_TABLE es poden trobar a http://www.ncbi.nlm.nih.gov/Taxonomy/Utils/wprintgc.cgi\n\nSi s'executa sense arguments, demanarà l'entrada manual de la seqüència d'un gen" #Missatge d'ajuda per a l'ús de l'script
 patro = 0 #Posició des d'on començar a llegir la cadena de DNA. Pot ser 0, 1 o 2. No gaire útil, per ara.
+transl_table='1' #Declaració de la variable per la taula de traducció del DNA
 
 #Codi genetic estandard
 CodiGenetic = { #Fem un Hash enmagatzemant el codi genetic
@@ -150,7 +153,7 @@ def mtAscidian():	#transl_table=13
   CodoInicial = ("TTG","ATA","ATG","GTG")
 
 #Alternative Flatworm Mitochondrial Code
-def Flatworm(): #transl_table=14
+def mtFlatworm(): #transl_table=14
   CodiGenetic['AAA'] = 'N'
   CodiGenetic['AGA'] = 'S'
   CodiGenetic['AGG'] = 'S'
@@ -184,9 +187,32 @@ def mtScenedesmus(): #transl_table=22
   CodoInicial = ("ATG")
 
 #Thraustochytrium Mitochondrial Code
-def mtThrau(): #transl_table=23
+def mtThraustochytrium(): #transl_table=23
   CodiGenetic['TTA'] = '_'
   CodoInicial = ("ATG","ATT","GTG")
+
+def foo():
+  print
+
+CodisGenetics = {
+  "1":foo,
+  "2":mtVertebrate,
+  "3":mtYeast,
+  "4":Mycoplasma,
+  "5":mtInvertebrate,
+  "6":Ciliate,
+  "9":mtEchinoderm,
+  "10":Euplotid,
+  "11":Plastid,
+  "12":AltYeast,
+  "13":mtAscidian,
+  "14":mtFlatworm,
+  "15":Blepharisma,
+  "16":mtChlorophycean,
+  "21":mtTrematode,
+  "22":mtScenedesmus,
+  "23":mtThraustochytrium,
+}
 
 def File2Line(File):
   Line = "" #Inicialitza la variable on guardarem la seqüència, per a cada volta del bucle
@@ -242,67 +268,45 @@ def DNA2aa(DNA): #Subrutina per a traduir la cadena de DNA prèviament validada 
 
 #Aquí comença l'execució
 
-if len(sys.argv) > 2 and sys.argv[1] == "--transl_table": #Per si volem fer servir un altre codi genètic
-  if sys.argv[2] == "1": #Cada número executa la subrutina del codi corresponent
-    pass
-  elif sys.argv[2] == "2":
-    mtVertebrate()
-  elif sys.argv[2] == "3":
-    mtYeast()
-  elif sys.argv[2] == "4":
-    Mycoplasma()
-  elif sys.argv[2] == "5":
-    mtInvertebrate()
-  elif sys.argv[2] == "6":
-    Ciliate()
-  elif sys.argv[2] == "9":
-    mtEchinoderm()
-  elif sys.argv[2] == "10":
-    Euplotid()
-  elif sys.argv[2] == "11":
-    Plastid()
-  elif sys.argv[2] == "12":
-    AltYeast()
-  elif sys.argv[2] == "13":
-    mtAscidian()
-  elif sys.argv[2] == "14":
-    Flatworm()
-  elif sys.argv[2] == "15":
-    Blepharisma()
-  elif sys.argv[2] == "16":
-    mtChlorophycean()
-  elif sys.argv[2] == "21":
-    mtTrematode()
-  elif sys.argv[2] == "22":
-    mtScenedesmus()
-  elif sys.argv[2] == "23":
-    mtThrau()
-  else:
-    print "Número de taula de transcripció incorrecte\n" #Número desconegut == morir
-    print Usage
-    exit(1)
-  
-  sys.argv = sys.argv[2:]#Retirem els dos primers arguments (--transl_table i el numero) per ab processar la resta de forma normal
-
-while len(sys.argv) < 2:
-  escrita = raw_input("Introduiu la seqüència de DNA d'un gen:")
-  sys.argv = [sys.argv[0],"--translate", escrita]
-
-if sys.argv[1] == "-h" or sys.argv[1] == "--help": #Interceptem demanda d'ajuda
+try:
+  opts, args = getopt.getopt(sys.argv[1:], "h?", ["help","translate", "transl_table="])
+except getopt.GetoptError, err:
+  print str(err)
   print Usage
   exit(1)
-else:
-  FromFile = "True"
-  for Arg in sys.argv[1:]: #Bucle per a dur a terme les operacions sobre tots els fitxers passats com a arguments
-    if Arg == "--translate":
-      FromFile = "False" #Si el primer argument és --translate, no procesarlo, pero canviar el comportament
-      continue
-    if FromFile == "False":
-      DNA = DNAParser(Arg)#Usa directament la seqüència des de l'argument, sense obrir un fitxer
-    else:
-      DNA = DNAParser(File2Line(Arg))#Cridem a la subrutina DNAParser, i el que retorna ho passem com a argument a la subrutina DNA2aa, que retornarà la proteina si tot va bé
-    
-    if DNA == "False":
-      print "Error: la seqüència introduïda no corresponia a un gen de DNA"
-    else:
-      print "Cadena traduïda: " + DNA2aa(DNA) #Tradueix i mostra la proteina resultant
+
+FromFile = "True"
+
+for o, a in opts:
+  if o in ["-h","--help","-?"]:
+    print Usage
+    exit(0)
+  elif o == "--translate":
+    FromFile = "False"
+  elif o in "--transl_table":
+    transl_table = a
+    try:
+      CodisGenetics[transl_table]()
+    except Exception,e:
+      print str(e)
+      print "Número de taula de transcripció incorrecte\n" #Número desconegut == morir
+      print Usage
+      exit(1)
+  else:
+    print "Unknown option " + o
+    exit(1)
+
+while len(args) < 1:
+  FromFile = "False"
+  escrita = raw_input("Introduiu la seqüència de DNA d'un gen:")
+  args = [sys.argv[0],"--translate", escrita]
+
+for Arg in args: #Bucle per a dur a terme les operacions sobre tots els fitxers passats com a arguments
+  if FromFile == "False":
+    DNA = DNAParser(Arg)#Usa directament la seqüència des de l'argument, sense obrir un fitxer
+  else:
+    DNA = DNAParser(File2Line(Arg))#Cridem a la subrutina DNAParser, i el que retorna ho passem com a argument a la subrutina DNA2aa, que retornarà la proteina si tot va bé  
+  if DNA == "False":
+    print "Error: la seqüència introduïda no corresponia a un gen de DNA"
+  else:
+    print "Cadena traduïda: " + DNA2aa(DNA) #Tradueix i mostra la proteina resultant
