@@ -1,7 +1,8 @@
 #!/usr/bin/perl -w
-use Getopt::Long; #S'emprara la funció Getopt per recuperar els arguments de l'script
 #Script per a traduir una seqüència de DNA a proteines, comprobant que sigui DNA i que tingui els codons necesaris
 # Adrià Cereto Massagué <adrian.cereto@estudiants.urv.cat>, David Carrasco Flores <noemseelteuemail@estudiants.urv.cat>
+
+use Getopt::Long; #S'emprara la funció Getopt per recuperar els arguments de l'script
 
 #Comencem a definir coses
 $output_file=0; #Guardar a un fitxer? Per defecte no
@@ -297,22 +298,22 @@ sub DNA2aa { #Subrutina per a traduir la cadena de DNA prèviament validada i pr
   return $Proteina; #Retornem la proteina
 }
 
-sub recupera_ARGV{
-  $SIG{__WARN__}= sub {die "Opció incorrecta.\n$Usage";};
-  GetOptions(
+sub recupera_ARGV{ #Funció per digerir els arguments
+  $SIG{__WARN__}= sub {die "Opció incorrecta.\n$Usage";}; #Mor si hi ha opcions desconegudes
+  GetOptions( #Implementa les diferents opcions
     'help|?',
     'transl_table=i' => \$transl_table,
     'translate=s' => \$translate,
     'output|save' => \$output_file
   );
-  if($opt_help){
-    die $Usage;
+  if($opt_help){ #Si ens demanen ajuda
+    die $Usage; #Morim ajudant
   };
 }
 
-#Et comento
+#Aqui ve un hash de funcions per a cridar a cada codi genètic per seu número de transl_table
 %CodisGenetics = (
-  "1"=>sub {print "" },
+  "1"=>sub {print "" }, #Fer res, perquè és l'standard.
   "2"=>\&mtVertebrate,
   "3"=>\&mtYeast,
   "4"=>\&Mycoplasma,
@@ -333,39 +334,38 @@ sub recupera_ARGV{
 
 #Aquí comença l'execució
 
-&recupera_ARGV;
-# foreach $a (@ARGV){ print "$a\n";}
+&recupera_ARGV; #Digereix els argument
 
-eval{
+eval{ #eval per morir si s'intenta fer servir una taula inexistent
   if($transl_table){
     $CodisGenetics{$transl_table}();
-    $postfix = "_transl_table=$transl_table.txt";
+    $postfix = "_transl_table=$transl_table.txt"; #Si fem servir una taula no estàndard,  pot interessar reflectir-ho al nom del fitxer
   }
 } or die "Número de taula de transcripció incorrecta\n$Usage";
 
 if($translate){
-  @Args = ($translate);
-}elsif (not(@ARGV)){
+  @Args = ($translate); #Si estem traduint directament un string, el que ens interessa està a $translate
+}elsif (not(@ARGV)){ #Si no hi ha arguments, demana l'entrada manual d'una seq.
   print "Introduiu la seqüència de DNA d'un gen:\n";
   $escrita = <> ;
   chomp $escrita;
   @Args = $escrita;
-  $translate = 1;
-  $output_filename = "Manual_DNA_entry".$postfix;
+  $translate = "1"; # A partir d'ara és com si fessim servir $translate
+  $output_filename = "Manual_DNA_entry".$postfix; #Canviem el nom de fitxer, ja que no hi ha fitxer d'entrada
 }else{
-  @Args = @ARGV;
+  @Args = @ARGV; #Si tenim arguments i no $translate, agafem arguments com a fitxers
 }
 foreach $argument (@Args){
-  if($translate){
-    $output_filename = "DNA".$postfix;
+  if($translate){ #Si $translate, no cal processar més $argument
+    $output_filename = "DNA".$postfix;#Canviem el nom de fitxer, ja que no hi ha fitxer d'entrada
     $translatable=$argument;
   }else{
-    $translatable=&File2Line($argument); #¿¿Estaves fent un array amb tooots els DNA traduits per passar-ho al següent foreach??
+    $translatable=&File2Line($argument); #Passem el fitxer a string
   }
-  $DNA = &DNAParser($translatable);  
-  if($DNA eq "False"){
+  $DNA = &DNAParser($translatable);  #Comprovem que sigui DNA gènic vàlid
+  if($DNA eq "False"){#Si la cosa no surt be...
     print "Error: la seqüència introduïda no corresponia a un gen de DNA\n";
-  }else{
+  }else{#Si surt be
     $Prot = &DNA2aa($DNA); #Traduim el DNA
     if($output_file){ #Si cal guardar-ho a un fitxer
       if ($output_filename eq ''){
