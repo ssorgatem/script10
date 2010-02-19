@@ -8,18 +8,19 @@ use Getopt::Long; #S'emprara la funció Getopt per recuperar els arguments de l'
 $save_file=0; #Guardar a un fitxer? Per defecte no
 $output_filename = ''; #Nom del fitxer a guardar
 $sufix ="_translated.txt"; #Postfix del nom de la traducció
+$separator = "--------------------------------------------------------------------------------\n";
 $Usage = "Ús:
     perl script10.pl [OPCIONS] ARXIU1 [ARXIU2] [ARXIU3] ...
 
 Possibles opcions:
 
-    --translate SEQÜÈNCIA1
+    --translate SEQÜÈNCIA
       Pren l'argument com a seqüència en comptes de com a fitxer.
 
     --transl_table TRANS_TABLE
       Els valors de TRANSL_TABLE es poden trobar a http://www.ncbi.nlm.nih.gov/Taxonomy/Utils/wprintgc.cgi
 
-    --output FILE
+    --output FITXER
       Desa tota la sortida a un fitxer
 
     --save
@@ -388,6 +389,7 @@ if($translate){
   @Args = @ARGV; #Si tenim arguments i no $translate, agafem arguments com a fitxers
 }
 foreach $argument (@Args){
+  $resultat .= $separator;
   if($translate){ #Si $translate, no cal processar més $argument
     $output_filename = "DNA".$sufix;#Canviem el nom de fitxer, ja que no hi ha fitxer d'entrada
     $translatable=$argument;
@@ -397,6 +399,7 @@ foreach $argument (@Args){
   $DNA = &DNAParser($translatable);  #Comprovem que sigui DNA gènic vàlid
   if($DNA eq "False"){#Si la cosa no surt be...
     $resultat .= "Error: la seqüència introduïda no corresponia a un gen de DNA\n";
+    $resultat .= $separator
   }else{#Si surt be
     $Prot = &DNA2aa($DNA); #Traduim el DNA
     if($save_file){ #Si cal guardar-ho a un fitxer
@@ -407,10 +410,9 @@ foreach $argument (@Args){
       print FITXER $Prot."\n"; #Guarda la proteina resultant
       close (FITXER);
     }
-  $resultat .= "--------------------------------------------------------------------------------\n";
   $resultat .=  "Cadena original: $DNA\n\n";#Mostra la cadena original
   $resultat .=  "Cadena traduïda: $Prot\n"; #Mostra la proteina resultant
-  $resultat .=  "--------------------------------------------------------------------------------\n";
+  $resultat .= $separator;
   } 
 }
 
