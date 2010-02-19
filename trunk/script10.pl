@@ -376,7 +376,7 @@ eval{#eval per morir si s'intenta fer servir una taula inexistent
   }
 } or die "Número de taula de transcripció incorrecta\n$Usage";
 
-if($translate){ ### A veure si pots implementar que pugui agafar translate i arxius SENSE  fer un altre bucle ni modificar la resta de funcions... xD
+if($translate){
   @Args = ($translate); #Si estem traduint directament un string, el que ens interessa està a $translate
 }
 if (not(@ARGV or $translate)){ #Si no hi ha arguments, demana l'entrada manual d'una seq.
