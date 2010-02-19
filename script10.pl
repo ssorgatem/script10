@@ -15,7 +15,7 @@ $Usage = "Ús:
 Possibles opcions:
 
     --translate SEQÜÈNCIA
-      Pren l'argument com a seqüència en comptes de com a fitxer.
+      Pren l'argument SEQÜÈNCIA com a seqüència en comptes de com a fitxer. 
 
     --transl_table TRANS_TABLE
       Els valors de TRANSL_TABLE es poden trobar a http://www.ncbi.nlm.nih.gov/Taxonomy/Utils/wprintgc.cgi
@@ -33,7 +33,7 @@ Si s'executa sense arguments, demanarà l'entrada manual de la seqüència d'un 
 
 $patro = 0; #Posició des d'on començar a llegir la cadena de DNA. Pot ser 0, 1 o 2. No gaire útil, per ara.
 
-@translate; #Array per les possibles cadenes de DNA a traduir
+@Args; #Array per les possibles cadenes de DNA a traduir
 
 $resultat='';
 #####----------------------------------------END: Definició de variables----------------------------------------#####
@@ -350,7 +350,7 @@ sub recupera_ARGV{
   GetOptions(
     'help|?',
     'transl_table=i' => \$transl_table,
-    'translate=s' => \@translate,
+    'translate=s' => \$translate,
     'output=s' => \$output_file,
     'save' => \$save_file
   );
@@ -376,21 +376,21 @@ eval{#eval per morir si s'intenta fer servir una taula inexistent
   }
 } or die "Número de taula de transcripció incorrecta\n$Usage";
 
-if($translate){
+if($translate){ ### A veure si pots implementar que pugui agafar translate i arxius SENSE  fer un altre bucle ni modificar la resta de funcions... xD
   @Args = ($translate); #Si estem traduint directament un string, el que ens interessa està a $translate
-}elsif (not(@ARGV)){ #Si no hi ha arguments, demana l'entrada manual d'una seq.
+}
+if (not(@ARGV or $translate)){ #Si no hi ha arguments, demana l'entrada manual d'una seq.
   print "Introduiu la seqüència de DNA d'un gen:\n";
-  $escrita = <> ;
-  chomp $escrita;
-  @Args = $escrita;
-  $translate = "1"; # A partir d'ara és com si fessim servir $translate
+  $translate = <> ;
+  chomp $translate;
+  @Args = $translate;
   $output_filename = "Manual_DNA_entry".$sufix; #Canviem el nom de fitxer, ja que no hi ha fitxer d'entrada
 }else{
-  @Args = @ARGV; #Si tenim arguments i no $translate, agafem arguments com a fitxers
+  @Args = (@ARGV,$translate); #Si tenim arguments i no $translate, agafem arguments com a fitxers
 }
 foreach $argument (@Args){
   $resultat .= $separator;
-  if($translate){ #Si $translate, no cal processar més $argument
+  if($translate eq $argument){ #Si $translate es $argument, no cal processar més $argument, perquè és la seqüència 
     $output_filename = "DNA".$sufix;#Canviem el nom de fitxer, ja que no hi ha fitxer d'entrada
     $translatable=$argument;
   }else{
