@@ -30,14 +30,10 @@ Totes les opcions son combinables
 
 Si s'executa sense arguments, demanarà l'entrada manual de la seqüència d'un gen
 "; #Missatge d'ajuda per a l'ús de l'script
-
 $patro = 0; #Posició des d'on començar a llegir la cadena de DNA. Pot ser 0, 1 o 2. No gaire útil, per ara.
-
 @Args; #Array per les possibles cadenes de DNA a traduir
-
 $resultat='';
 #####----------------------------------------END: Definició de variables----------------------------------------#####
-
 
 #####----------------------------------------START: Definicions de les taules genètiques----------------------------------------#####
 #Codi genetic estandard
@@ -296,17 +292,6 @@ sub DNAParser{
   $SeqLen = length $RawSeq;#Calculem la longitud de la cadena
   $PrimerCodo = substr($RawSeq, $patro, 3); #Llegim i enmagatzemem el primer codo per la seva posterior comprovació
   $esInici = grep(/$PrimerCodo$/,@CodoInicial);#Comprovem que comenci per un codó d'inici
-
-#   if ( $SeqLen%3 != 0){ #Comprovem si és divisible entre 3, i si no ho és abortem
-#     return ["False","$RawSeq\nSeqüència incompleta! No és múltiple de 3\nAbortant..."];
-#   }elsif($RawSeq =~ /[^ACGT]/g){ #Ara busquem bases que no sigui(substr($RawSeq, $patro, 3))n A,C,G o T
-#     return ["False","$RawSeq\nLa seqüència no está formada només per A,T,C o G, abortant"]; #Si les trobem, no continuem
-#   }elsif(not($esInici)){ #Comprovem que comenci per un codó d'inici
-#     return ["False","$RawSeq\nEl codó inicial $PrimerCodo no és un codó d'inici!"];#I si no ho fa, abortem
-#   }elsif($CodiGenetic{(substr($RawSeq, $SeqLen-3, 3))} ne "_"){ #Comprovem que acabi amb un codó de stop
-#     return ["False","$RawSeq\nEl codó final ".(substr($RawSeq, $SeqLen-3, 3))." no és un codó de stop!"];#I si no ho fa, abortem
-#   }else{ #Si no, seguim
-#     return ["True",$RawSeq];
   if ( $SeqLen%3 != 0){ #Comprovem si és divisible entre 3, i si no ho és abortem
     $resultat .= "seqüència incompleta! No és múltiple de 3\nAbortant...\n";
     return "False"
@@ -367,7 +352,6 @@ sub recupera_ARGV{
 
 #Carreguem el codi genètic adient
 eval{#eval per morir si s'intenta fer servir una taula inexistent
-  #$CodisGenetics{$transl_table}();
   if($transl_table){ #Si no es defineix transl_table, no cal que intentem fer res al diccionari
     $CodisGenetics{$transl_table}();
     $sufix = "_transl_table=$transl_table.txt"; #Si fem servir una taula no estàndard,  pot interessar reflectir-ho al nom del fitxer
@@ -425,49 +409,3 @@ if($output_file){ #Si la opció de desar en disc s'havia especificat, el desem
 }
 
 #####----------------------------------------END: Execució de l'script----------------------------------------#####
-
-
-# die;
-# #Avaluem l'origen de la seqüència de DNA
-# if(@ARGV){
-#   #Si hem donat el nom d'algun(s) arxiu(s)
-#   foreach $ARGV(@ARGV){
-#     @translate=(@translate,[$ARGV,&File2Line($ARGV)]); #Afegeix el nom d'arxiu i la cadena a la matriu @translate mitjançant una matriu
-#   }
-# }elsif(not @translate){
-# #Si no hem afegit l'argument --translate <Codi DNA> ni cap arxiu
-#     print "Introduiu la seqüència de DNA d'un gen:\n";
-#     $escrita = <> ;
-#     chomp $escrita;
-#     @translate=$escrita;
-# }
-# 
-# foreach $cadena(@translate){ #Processem cadascuna de les entrades de @translate
-#   @DNA; #Array local que contindrà si és una cadena vàlida i la cadena/error
-#   if (@$cadena[1]){
-#     #Si és un array tindrà [0] el nom de l'arxiu i [1] el contingut
-#     $resultat=$resultat . "Fitxer d'origen: @$cadena[0]\n";
-#     $resultat=$resultat . "----------------------------------------\n";
-#     @DNA=@{DNAParser(@$cadena[1])}; #Desreferenciem la matriu resultant de la funció i l'emmagatzemem temporalment
-#   }else{
-#     #Si no es un array, per tant només és una cadena
-#     $resultat=$resultat . "----------------------------------------\n";
-#     @DNA=@{DNAParser($cadena)};
-#   }
-# 
-#   $resultat=$resultat . "Cadena de DNA: $DNA[1]\n";
-# 
-#   if($DNA[0] eq "True"){
-#     $resultat=$resultat . "\nProteïna: " . DNA2aa($DNA[1]) . "\n";
-#   }
-# 
-#   $resultat=$resultat . "----------------------------------------\n\n\n";
-# }
-# 
-# print $resultat; #Mostrem el resultat per pantalla
-#   
-# if($output_file){ #Si la opció de desar en disc s'havia especificat, el desem
-#   open (FITXER, '>', $output_file);
-#   print FITXER $resultat;
-#   close (FITXER);
-# }
