@@ -111,7 +111,7 @@ $Translatecount = 0; #Nombre d'iteracion de --translate dutes a terme
 
 #Codi genetic per mitocondries de vertebrats
 sub mtVertebrate{	#transl_table=2
-  $resultat .="Es traduirà segons el genoma mitocondrial de vertebrats\n\n";
+  $resultat .="Es traduirà segons el genoma mitocondrial de vertebrats (transl_table=2)\n\n";
   $CodiGenetic{'AGA'} = '_';
   $CodiGenetic{'AGG'} = '_';
   $CodiGenetic{'ATA'} = 'M';
@@ -121,7 +121,7 @@ sub mtVertebrate{	#transl_table=2
 
 #Codi genetic per mitocondries de llevats
 sub mtYeast {	#transl_table=3
-  $resultat .="Es traduirà segons el genoma mitocondrial de llevats\n\n";
+  $resultat .="Es traduirà segons el genoma mitocondrial de llevats (transl_table=3)\n\n";
   $CodiGenetic{'ATA'} = 'M';
   $CodiGenetic{'CTT'} = 'T';
   $CodiGenetic{'CTC'} = 'T';
@@ -135,14 +135,14 @@ sub mtYeast {	#transl_table=3
 
 #Codi genetic per micoplasmes/spiroplames i mitocondries de molses, protozous, colenterats
 sub Mycoplasma{	#transl_table=4
-  $resultat .="Es traduirà segons el genoma de micoplasmes/spiroplasmes i de mitocondris de molses, protozous i colenterats\n\n";
+  $resultat .="Es traduirà segons el genoma de micoplasmes/spiroplasmes i de mitocondris de molses, protozous i colenterats (transl_table=4)\n\n";
   $CodiGenetic{'TGA'} = 'W';
   @CodoInicial = ("TTA","TTG","CTG","ATT","ATC","ATA","ATG","GTG");
 }
 
 #Codi genetic per mitocondries d'invertebrats
 sub mtInvertebrate{	#transl_table=5
-  $resultat .="Es traduirà segons el genoma mitocondral d'invertebrats\n\n";
+  $resultat .="Es traduirà segons el genoma mitocondral d'invertebrats (transl_table=5)\n\n";
   $CodiGenetic{'AGA'} = 'S';
   $CodiGenetic{'AGG'} = 'S';
   $CodiGenetic{'ATA'} = 'M';
@@ -152,7 +152,7 @@ sub mtInvertebrate{	#transl_table=5
 
 #The Ciliate, Dasycladacean and Hexamita Nuclear Code
 sub Ciliate { #transl_table=6
-  $resultat .="Es traduirà segons el genoma dels ciliats, dasicladacis i hexamites\n\n";
+  $resultat .="Es traduirà segons el genoma dels ciliats, dasicladacis i hexamites (transl_table=6)\n\n";
   $CodiGenetic{'TAA'} = 'Q';
   $CodiGenetic{'TAG'} = 'Q';
   @CodoInicial = ("ATG")
@@ -160,7 +160,7 @@ sub Ciliate { #transl_table=6
 
 #The Echinoderm and mtFlatworm Mitochondrial Code
 sub mtEchinoderm { #transl_table=9
-  $resultat .="Es traduirà segons el genoma d'equinoderms i de mitocondris de plathielmints\n\n";
+  $resultat .="Es traduirà segons el genoma d'equinoderms i de mitocondris de plathielmints (transl_table=9)\n\n";
   $CodiGenetic{'AAA'} = 'N';
   $CodiGenetic{'AGA'} = 'S';
   $CodiGenetic{'AGG'} = 'S';
@@ -170,27 +170,27 @@ sub mtEchinoderm { #transl_table=9
 
 #Euplotid Nuclear Code
 sub Euplotid { #transl_table=10
-  $resultat .="Es traduirà segons el genoma dels euplòtids\n\n";
+  $resultat .="Es traduirà segons el genoma dels euplòtids (transl_table=10)\n\n";
   $CodiGenetic{'TGA'} = 'C';
   @CodoInicial = ("ATG")
 }
 
 #Bacterial, Archaeal and Plant Plastid Code
 sub Plastid { #transl_table=11
-  $resultat .="Es traduirà segons el genoma de bacteris, arquees i plastos vegetals\n\n";
+  $resultat .="Es traduirà segons el genoma de bacteris, arquees i plastos vegetals (transl_table=11)\n\n";
   @CodoInicial = ("TTG","CTG","ATT","ATC","ATA","ATG","GTG")
 }
 
 #Alternative Yeast Nuclear Code
 sub AltYeast { #transl_table=12
-  $resultat .="Es traduirà segons el genoma alternatiu de llevats\n\n";
+  $resultat .="Es traduirà segons el genoma alternatiu de llevats (transl_table=12)\n\n";
   $CodiGenetic{'CTG'} = 'S';
   @CodoInicial = ("ATG","CTG")
 }
 
 #Codi genetic per mitocondris d'ascidis
 sub mtAscidian{	#transl_table=13
-  $resultat .="Es traduirà segons el genoma mitocondrial d'ascidis\n\n";
+  $resultat .="Es traduirà segons el genoma mitocondrial d'ascidis (transl_table=13)\n\n";
   $CodiGenetic{'AGA'} = 'G';
   $CodiGenetic{'AGG'} = 'G';
   $CodiGenetic{'ATA'} = 'M';
@@ -200,7 +200,7 @@ sub mtAscidian{	#transl_table=13
 
 #Alternative mtFlatworm Mitochondrial Code
 sub mtAltFlatworm { #transl_table=14
-  $resultat .="Es traduirà segons el genoma mitocondrial alternatiu de plathielmints\n\n";
+  $resultat .="Es traduirà segons el genoma mitocondrial alternatiu de platielmints(transl_table=14)\n\n";
   $CodiGenetic{'AAA'} = 'N';
   $CodiGenetic{'AGA'} = 'S';
   $CodiGenetic{'AGG'} = 'S';
@@ -211,21 +211,21 @@ sub mtAltFlatworm { #transl_table=14
 
 #Blepharisma Nuclear Code
 sub Blepharisma { #transl_table=15
-  $resultat .="Es traduirà segons el genoma de blefarismes\n\n";
+  $resultat .="Es traduirà segons el genoma de blefarismes(transl_table=15)\n\n";
   $CodiGenetic{'TAG'} = 'Q';
   @CodoInicial = ("ATG")
 }
 
 #Chlorophycean Mitochondrial Code
 sub mtChlorophycean { #transl_table=16
-  $resultat .="Es traduirà segons el genoma mitocondrial de clorofícies\n\n";
+  $resultat .="Es traduirà segons el genoma mitocondrial de clorofícies(transl_table=16)\n\n";
   $CodiGenetic{'TAG'} = 'L';
   @CodoInicial = ("ATG")
 }
 
 #Trematode Mitochondrial Code
 sub mtTrematode { #transl_table=21
-  $resultat .="Es traduirà segons el genoma mitocondrial de tremàtodes\n\n";
+  $resultat .="Es traduirà segons el genoma mitocondrial de tremàtodes(transl_table=21)\n\n";
   $CodiGenetic{'TGA'} = 'W';
   $CodiGenetic{'ATA'} = 'M';
   $CodiGenetic{'AGA'} = 'S';
@@ -236,7 +236,7 @@ sub mtTrematode { #transl_table=21
 
 #Scenedesmus obliquus mitochondrial Code
 sub mtScenedesmus { #transl_table=22
-  $resultat .="Es traduirà segons el genoma mitocondrial de Scenedesmus obliquus\n\n";
+  $resultat .="Es traduirà segons el genoma mitocondrial de Scenedesmus obliquus(transl_table=22)\n\n";
   $CodiGenetic{'TCA'} = '_';
   $CodiGenetic{'TAG'} = 'L';
   @CodoInicial = ("ATG")
@@ -244,14 +244,14 @@ sub mtScenedesmus { #transl_table=22
 
 #Thraustochytrium Mitochondrial Code
 sub mtThraustochytrium { #transl_table=23
-  $resultat .="Es traduirà segons el genoma mitocondrial de Thraustochytrium sp.\n\n";
+  $resultat .="Es traduirà segons el genoma mitocondrial de Thraustochytrium sp. (transl_table=23)\n\n";
   $CodiGenetic{'TTA'} = '_';
   @CodoInicial = ("ATG","ATT","GTG")
 }
 
 #Hash que relaciona els valors de --transl_table amb els diversos codis genètics
 %CodisGenetics = (
-  "1"=>sub {$resultat .= "Es traduirà segons el genoma estàndard\n\n";},
+  "1"=>sub {$resultat .= "Es traduirà segons el genoma estàndard (transl_table=1)\n\n";},
   "2"=>\&mtVertebrate,
   "3"=>\&mtYeast,
   "4"=>\&Mycoplasma,
@@ -292,14 +292,13 @@ sub DNAParser{
   $RawSeq = uc $_[0]; #Passem a majúscules
   $SeqLen = length $RawSeq;#Calculem la longitud de la cadena
   $PrimerCodo = substr($RawSeq, $patro, 3); #Llegim i enmagatzemem el primer codo per la seva posterior comprovació
-  $esInici = grep(/$PrimerCodo$/,@CodoInicial);#Comprovem que comenci per un codó d'inici
   if ( $SeqLen%3 != 0){ #Comprovem si és divisible entre 3, i si no ho és abortem
     $resultat .= "seqüència incompleta! No és múltiple de 3\nAbortant...\n";
     return "False"
   } elsif($RawSeq =~ /[^ACGT]/g){ #Ara busquem bases que no sigui(substr($RawSeq, $patro, 3))n A,C,G o T
     $resultat .=  "La seqüència no está formada només per A,T,C o G, abortant\n"; #Si les trobem, no continuem
     return "False";
-  }elsif(not($esInici)){ #Comprovem que comenci per un codó d'inici
+  }elsif(not(grep(/$PrimerCodo$/,@CodoInicial))){ #Comprovem que comenci per un codó d'inici
     $resultat .=  "El codó inicial $PrimerCodo no és un codó d'inici!\n";#I si no ho fa, abortem
     return "False";
   }elsif($CodiGenetic{(substr($RawSeq, $SeqLen-3, 3))} ne "_"){ #Comprovem que acabi amb un codó de stop
@@ -324,7 +323,7 @@ sub DNA2aa {
       $resultat .= "Codó desconegut:$codon !\n";
       $aa = "?"; #Queixem-nos i posem un interrogant a la proteina
     }
-    $Proteina = $Proteina.$aa;
+    $Proteina .= $aa;
   }
   print "\n";
   return $Proteina; #Retornem la proteina
@@ -375,8 +374,8 @@ foreach $argument (@Args){
   $resultat .= $separator; #Afegim separador al resultat
   if(grep(/$argument$/,@translate)){ #Si $translate es $argument, no cal processar més $argument, perquè és la seqüència 
     $DNA = &DNAParser($argument);#Comprovem que sigui DNA gènic vàlid
-    $Translatecount += 1;
     $save_filename = "DNA".$Translatecount.$sufix;#Canviem el nom de fitxer, ja que no hi ha fitxer d'entrada
+    $Translatecount += 1;
   }else{
     $DNA = &DNAParser(&File2Line($argument)); #Passem el fitxer a string
     $save_filename = $argument.$sufix;
