@@ -6,7 +6,7 @@ use Getopt::Long; #S'emprara la funció Getopt per recuperar els arguments de l'
 
 #####----------------------------------------START: Definició de variables----------------------------------------#####
 $save_file=0; #Guardar a un fitxer? Per defecte no
-$output_filename = ''; #Nom del fitxer a guardar
+$save_filename = ''; #Nom del fitxer a guardar
 $sufix ="_translated.txt"; #Postfix del nom de la traducció
 $separator = "--------------------------------------------------------------------------------\n";
 $Usage = "Ús:
@@ -330,11 +330,11 @@ sub DNA2aa {
 }
 
 sub recupera_ARGV{
-  $SIG{__WARN__}= sub {die $Usage;};
+  #$SIG{__WARN__}= sub {die "Opció desconeguda\n".$Usage;}; #Amb qualsevol warning mor! es excessiu
   GetOptions(
     'help|?',
     'transl_table=i' => \$transl_table,
-    'translate=s' => \$translate,
+    'translate=s' => \@translate,
     'output=s' => \$output_file,
     'save' => \$save_file
   );
@@ -359,22 +359,22 @@ eval{#eval per morir si s'intenta fer servir una taula inexistent
   }
 } or die "Número de taula de transcripció incorrecta\n$Usage";
 
-if($translate){
-  @Args = ($translate); #Si estem traduint directament un string, el que ens interessa està a $translate
+if(@translate){
+  @Args = @translate; #Si estem traduint directament un string, el que ens interessa està a $translate
 }
-if (not(@ARGV or $translate)){ #Si no hi ha arguments, demana l'entrada manual d'una seq.
+if (not(@ARGV or @translate)){ #Si no hi ha arguments, demana l'entrada manual d'una seq.
   print "Introduiu la seqüència de DNA d'un gen:\n";
-  $translate = <> ;
-  chomp $translate;
-  @Args = $translate;
-  $output_filename = "Manual_DNA_entry".$sufix; #Canviem el nom de fitxer, ja que no hi ha fitxer d'entrada
+  @translate = <> ;
+  chomp $translate[0];
+  @Args = $translate[0];
+  $save_filename = "Manual_DNA_entry".$sufix; #Canviem el nom de fitxer, ja que no hi ha fitxer d'entrada
 }else{
-  @Args = (@ARGV,$translate); #Si tenim arguments i no $translate, agafem arguments com a fitxers
+  @Args = (@Args,@ARGV); #Si tenim arguments i no $translate, agafem arguments com a fitxers
 }
 foreach $argument (@Args){
-  $resultat .= $separator;
-  if($translate eq $argument){ #Si $translate es $argument, no cal processar més $argument, perquè és la seqüència 
-    $output_filename = "DNA".$sufix;#Canviem el nom de fitxer, ja que no hi ha fitxer d'entrada
+  $resultat .= $separator; #Afegim separador al resultat
+  if(grep(/$argument$/,@translate)){ #Si $translate es $argument, no cal processar més $argument, perquè és la seqüència 
+    $save_filename = "DNA".$sufix;#Canviem el nom de fitxer, ja que no hi ha fitxer d'entrada
     $translatable=$argument;
   }else{
     $translatable=&File2Line($argument); #Passem el fitxer a string
@@ -382,20 +382,20 @@ foreach $argument (@Args){
   $DNA = &DNAParser($translatable);  #Comprovem que sigui DNA gènic vàlid
   if($DNA eq "False"){#Si la cosa no surt be...
     $resultat .= "Error: la seqüència introduïda no corresponia a un gen de DNA\n";
-    $resultat .= $separator
+    $resultat .= $separator; #Afegim separador al resultat
   }else{#Si surt be
     $Prot = &DNA2aa($DNA); #Traduim el DNA
     if($save_file){ #Si cal guardar-ho a un fitxer
-      if ($output_filename eq ''){#Si no tenim definit el nom de fitxer de sortida, agafem el del d'origen + sufix
-	$output_filename = $argument.$sufix;
+      if ($save_filename eq ''){#Si no tenim definit el nom de fitxer de sortida, agafem el del d'origen + sufix
+	$save_filename = $argument.$sufix;
       }
-      open (FITXER, '>', $output_filename); #No volem afegir coses al fitxer, sinó sobreescriure'l. Era bonic fer un fitxer amb l'output de la consola, pero és poc pràctic. És més útil fer un fitxer per cada seqncia proteica, que només tingui la cadena d'aminoàcids
+      open (FITXER, '>', $save_filename); #Obrim el fitxer on guardar la proteina
       print FITXER $Prot."\n"; #Guarda la proteina resultant
       close (FITXER);
     }
   $resultat .=  "Cadena original: $DNA\n\n";#Mostra la cadena original
   $resultat .=  "Cadena traduïda: $Prot\n"; #Mostra la proteina resultant
-  $resultat .= $separator;
+  $resultat .= $separator; #Afegim separador al resultat;
   } 
 }
 
