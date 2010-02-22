@@ -24,15 +24,16 @@ Possibles opcions:
       Desa tota la sortida a un fitxer
 
     --save
-      Desa la seqüència traduïda a 'ARXIU$sufix ', o 'Manual_DNA_entry$sufix ' o 'DNA$sufix ', segons el mètode d'entrada.
+      Desa al directori de treball la seqüència traduïda com a 'ARXIU$sufix'[TRANS_TABLE] (seqüències des de fitxers) o 'DNA#$sufix'[TRANS_TABLE] (seqüències no provinents de fitxers). Si ja existia un fitxer amb aquell nom, serà sobreescrit
 
 Totes les opcions son combinables
 
-Si s'executa sense arguments, demanarà l'entrada manual de la seqüència d'un gen
+Si s'executa sense arguments, demanarà l'entrada manual de la seqüència d'un gen.
+Per defecte, es fa servir el codi genètic estàndard, però sense notificacions al respecte. Si s'especifica --transl_table 1, sí que es notificarà que s'està fent servir el codi genètic estàndard.
 "; #Missatge d'ajuda per a l'ús de l'script
 $patro = 0; #Posició des d'on començar a llegir la cadena de DNA. Pot ser 0, 1 o 2. No gaire útil, per ara.
-@Args; #Array per les possibles cadenes de DNA a traduir
 $resultat='';
+$Translatecount = 0; #Nombre d'iteracion de --translate dutes a terme
 #####----------------------------------------END: Definició de variables----------------------------------------#####
 
 #####----------------------------------------START: Definicions de les taules genètiques----------------------------------------#####
@@ -351,7 +352,7 @@ sub recupera_ARGV{
 
 #Carreguem el codi genètic adient
 eval{#eval per morir si s'intenta fer servir una taula inexistent
-  if($transl_table){ #Si no es defineix transl_table, no cal que intentem fer res al diccionari
+  if($transl_table){ #Si no es defineix transl_table, no cal que intentem fer res al diccionari, ni que especifiquem que fer servir el codi genètic estàndard
     $CodisGenetics{$transl_table}();
     $sufix = "_transl_table=$transl_table.txt"; #Si fem servir una taula no estàndard,  pot interessar reflectir-ho al nom del fitxer
   }else{
@@ -367,28 +368,25 @@ if (not(@ARGV or @translate)){ #Si no hi ha arguments, demana l'entrada manual d
   @translate = <> ;
   chomp $translate[0];
   @Args = $translate[0];
-  $save_filename = "Manual_DNA_entry".$sufix; #Canviem el nom de fitxer, ja que no hi ha fitxer d'entrada
 }else{
   @Args = (@Args,@ARGV); #Si tenim arguments i no $translate, agafem arguments com a fitxers
 }
 foreach $argument (@Args){
   $resultat .= $separator; #Afegim separador al resultat
   if(grep(/$argument$/,@translate)){ #Si $translate es $argument, no cal processar més $argument, perquè és la seqüència 
-    $save_filename = "DNA".$sufix;#Canviem el nom de fitxer, ja que no hi ha fitxer d'entrada
-    $translatable=$argument;
+    $DNA = &DNAParser($argument);#Comprovem que sigui DNA gènic vàlid
+    $Translatecount += 1;
+    $save_filename = "DNA".$Translatecount.$sufix;#Canviem el nom de fitxer, ja que no hi ha fitxer d'entrada
   }else{
-    $translatable=&File2Line($argument); #Passem el fitxer a string
+    $DNA = &DNAParser(&File2Line($argument)); #Passem el fitxer a string
+    $save_filename = $argument.$sufix;
   }
-  $DNA = &DNAParser($translatable);  #Comprovem que sigui DNA gènic vàlid
   if($DNA eq "False"){#Si la cosa no surt be...
     $resultat .= "Error: la seqüència introduïda no corresponia a un gen de DNA\n";
     $resultat .= $separator; #Afegim separador al resultat
   }else{#Si surt be
     $Prot = &DNA2aa($DNA); #Traduim el DNA
     if($save_file){ #Si cal guardar-ho a un fitxer
-      if ($save_filename eq ''){#Si no tenim definit el nom de fitxer de sortida, agafem el del d'origen + sufix
-	$save_filename = $argument.$sufix;
-      }
       open (FITXER, '>', $save_filename); #Obrim el fitxer on guardar la proteina
       print FITXER $Prot."\n"; #Guarda la proteina resultant
       close (FITXER);
@@ -399,12 +397,11 @@ foreach $argument (@Args){
   } 
 }
 
-print $resultat;
+print $resultat;#Mostrem el resultat
 
 if($output_file){ #Si la opció de desar en disc s'havia especificat, el desem
   open (FITXER, '>', $output_file);
   print FITXER $resultat;
   close (FITXER);
 }
-
 #####----------------------------------------END: Execució de l'script----------------------------------------#####
