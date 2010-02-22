@@ -322,7 +322,6 @@ sub DNA2aa {
     }elsif ($aa eq ''){#Això no hauria de passar, però si trobem un codó que no es contempla al codi genètic...(segurament per culpa d'un bug) 
       $resultat .= "Codó desconegut:$codon !\n";
       $aa = "?"; #Queixem-nos i posem un interrogant a la proteina
-    }else{#Si no, guardem l'aminoàcid a la variable $Proteina
       $Proteina = $Proteina.$aa;
     }
   }
