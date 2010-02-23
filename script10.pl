@@ -6,7 +6,6 @@ use Getopt::Long; #S'emprara la funció Getopt per recuperar els arguments de l'
 
 #####----------------------------------------START: Definició de variables----------------------------------------#####
 $save_file=0; #Guardar a un fitxer? Per defecte no
-$save_filename = ''; #Nom del fitxer a guardar
 $sufix ="_translated.txt"; #Postfix del nom de la traducció
 $separator = "--------------------------------------------------------------------------------\n";
 $Usage = "Ús:
@@ -107,7 +106,7 @@ $Translatecount = 0; #Nombre d'iteracion de --translate dutes a terme
 
 @CodoInicial = ("ATG","TTG","CTG");#Array dels codons inicials del codi genètic estàndard
 
-#Diferents codis genetics estrests de: http://www.ncbi.nlm.nih.gov/Taxonomy/Utils/wprintgc.cgi?mode=t#SG3
+#Diferents codis genetics extrets de: http://www.ncbi.nlm.nih.gov/Taxonomy/Utils/wprintgc.cgi?mode=t#SG3
 
 #Codi genetic per mitocondries de vertebrats
 sub mtVertebrate{	#transl_table=2
@@ -333,7 +332,7 @@ sub recupera_ARGV{
   #$SIG{__WARN__}= sub {die "Opció desconeguda\n".$Usage;}; #Amb qualsevol warning mor! es excessiu
   GetOptions(
     'help|?',
-    'transl_table=i' => \$transl_table,
+    'transl_table=s' => \$transl_table,
     'translate=s' => \@translate,
     'output=s' => \$output_file,
     'save' => \$save_file
