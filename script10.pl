@@ -32,7 +32,7 @@ Possibles opcions:
 Totes les opcions son combinables
 
 Si s'executa sense arguments, demanarà l'entrada manual de la seqüència d'un gen.
-Per defecte, es fa servir el codi genètic estàndard, però sense notificacions al respecte. Si s'especifica --transl_table 1, sí que es notificarà que s'està fent servir el codi genètic estàndard.
+Si no s'especifica taula, s'assumeix el codi genètic estàndard.
 "; #Missatge d'ajuda per a l'ús de l'script
 #####----------------------------------------END: Definició de variables----------------------------------------#####
 
@@ -354,6 +354,8 @@ eval{
     $CodisGenetics{$transl_table}();
     $sufix = "_table$transl_table.txt"
   } or die "Número de taula de transcripció incorrecta\n$Usage";
+
+
 
 if(@translate){
   @Args = @translate; #Si estem traduint directament un string, el que ens interessa està a $translate
