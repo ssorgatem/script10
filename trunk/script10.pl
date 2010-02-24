@@ -5,6 +5,7 @@
 use Getopt::Long; #S'emprara la funció Getopt per recuperar els arguments de l'script
 
 #####----------------------------------------START: Definició de variables----------------------------------------#####
+$transl_table="1";
 $patro = 0; #Posició des d'on començar a llegir la cadena de DNA. Pot ser 0, 1 o 2. No gaire útil, per ara.
 $resultat='';
 $Translatecount = 0; #Nombre d'iteracion de --translate dutes a terme
@@ -349,14 +350,9 @@ sub recupera_ARGV{
 &recupera_ARGV;#Digereix els argument
 
 #Carreguem el codi genètic adient
-eval{#eval per morir si s'intenta fer servir una taula inexistent
-  if($transl_table){ #Si no es defineix transl_table, no cal que intentem fer res al diccionari, ni que especifiquem que fer servir el codi genètic estàndard
+eval{
     $CodisGenetics{$transl_table}();
-    $sufix = "_transl_table=$transl_table.txt"; #Si fem servir una taula no estàndard,  pot interessar reflectir-ho al nom del fitxer
-  }else{
-  print "";#Per a que l'eval no mori si no esta definit $transl_table
-  }
-} or die "Número de taula de transcripció incorrecta\n$Usage";
+  } or die "Número de taula de transcripció incorrecta\n$Usage";
 
 if(@translate){
   @Args = @translate; #Si estem traduint directament un string, el que ens interessa està a $translate
