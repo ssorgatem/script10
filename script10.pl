@@ -352,6 +352,7 @@ sub recupera_ARGV{
 #Carreguem el codi genètic adient
 eval{
     $CodisGenetics{$transl_table}();
+    $sufix = "_table$transl_table.txt"
   } or die "Número de taula de transcripció incorrecta\n$Usage";
 
 if(@translate){
