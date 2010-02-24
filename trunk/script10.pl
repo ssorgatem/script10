@@ -5,6 +5,9 @@
 use Getopt::Long; #S'emprara la funció Getopt per recuperar els arguments de l'script
 
 #####----------------------------------------START: Definició de variables----------------------------------------#####
+$patro = 0; #Posició des d'on començar a llegir la cadena de DNA. Pot ser 0, 1 o 2. No gaire útil, per ara.
+$resultat='';
+$Translatecount = 0; #Nombre d'iteracion de --translate dutes a terme
 $save_file=0; #Guardar a un fitxer? Per defecte no
 $sufix ="_translated.txt"; #Postfix del nom de la traducció
 $separator = "--------------------------------------------------------------------------------\n";
@@ -30,9 +33,6 @@ Totes les opcions son combinables
 Si s'executa sense arguments, demanarà l'entrada manual de la seqüència d'un gen.
 Per defecte, es fa servir el codi genètic estàndard, però sense notificacions al respecte. Si s'especifica --transl_table 1, sí que es notificarà que s'està fent servir el codi genètic estàndard.
 "; #Missatge d'ajuda per a l'ús de l'script
-$patro = 0; #Posició des d'on començar a llegir la cadena de DNA. Pot ser 0, 1 o 2. No gaire útil, per ara.
-$resultat='';
-$Translatecount = 0; #Nombre d'iteracion de --translate dutes a terme
 #####----------------------------------------END: Definició de variables----------------------------------------#####
 
 #####----------------------------------------START: Definicions de les taules genètiques----------------------------------------#####
@@ -329,7 +329,7 @@ sub DNA2aa {
 }
 
 sub recupera_ARGV{
-  #$SIG{__WARN__}= sub {die "Opció desconeguda\n".$Usage;}; #Amb qualsevol warning mor! es excessiu
+  local $SIG{__WARN__}= sub {die "Opció desconeguda\n".$Usage;}; #Amb qualsevol warning mor! es excessiu
   GetOptions(
     'help|?',
     'transl_table=s' => \$transl_table,
