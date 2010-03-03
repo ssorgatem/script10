@@ -20,14 +20,14 @@ Possibles opcions:
     --translate SEQÜÈNCIA
       Pren l'argument SEQÜÈNCIA com a seqüència en comptes de com a fitxer. 
 
-    --transl_table TRANS_TABLE
+    --transl_table TRANSL_TABLE
       Els valors de TRANSL_TABLE es poden trobar a http://www.ncbi.nlm.nih.gov/Taxonomy/Utils/wprintgc.cgi
 
     --output FITXER
       Desa tota la sortida a un fitxer
 
     --save
-      Desa al directori de treball la seqüència traduïda com a 'ARXIU$sufix'[TRANS_TABLE] (seqüències des de fitxers) o 'DNA#$sufix'[TRANS_TABLE] (seqüències no provinents de fitxers). Si ja existia un fitxer amb aquell nom, serà sobreescrit
+      Desa al directori de treball la seqüència traduïda com a 'ARXIU$sufix'[TRANSL_TABLE] (seqüències des de fitxers) o 'DNA#$sufix'[TRANSL_TABLE] (seqüències no provinents de fitxers). Si ja existia un fitxer amb aquell nom, serà sobreescrit
 
 Totes les opcions son combinables
 
