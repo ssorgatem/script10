@@ -1,0 +1,5 @@
+#!/usr/bin/perl
+
+$res="ddd";
+$res=$res."rrr";
+print $res;
